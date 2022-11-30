@@ -1,4 +1,4 @@
-package it.unicas.engsoftwareproject;
+package it.unicas.engsoftwareproject.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
