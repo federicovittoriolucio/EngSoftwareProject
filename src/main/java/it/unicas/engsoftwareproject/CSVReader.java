@@ -36,8 +36,8 @@ public class CSVReader {
         while(sc.hasNextLine())
         {
             String line = sc.nextLine();
-            String[] pipo = line.split(",");
-            list.add(pipo);
+            String[] rowline = line.split(",");
+            list.add(rowline);
         }
 
         numcols = fields.size();
