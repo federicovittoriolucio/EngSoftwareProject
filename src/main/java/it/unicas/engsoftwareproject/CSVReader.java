@@ -18,6 +18,8 @@ public class CSVReader {
     private int numrows;
     private int numvoltsens;
     private int numtempsens;
+    private boolean current;
+    private boolean faults;
 
     public CSVReader(String pathname) throws FileNotFoundException {
         Scanner sc = new Scanner(new File(pathname));
@@ -47,26 +49,30 @@ public class CSVReader {
             for (int j = 0; j < numcols; j++)
                 values[i][j] = Double.parseDouble(list.get(i)[j]);
         }
-        /*
-        for(int i = 0; i < list.size(); i++)
-        {
-            for (int j = 0; j < fields.size(); j++)
-                System.out.print(values[i][j] + " ");
 
-            System.out.println("");
-        }*/
+        numvoltsens = 0;
+        numtempsens = 0;
+        current = false;
+        faults = false;
 
-        for(int i = 0; i < numcols; i++)
-            if(fields.get(i).equals("Vstack")) {
+        for(int i = 0; i < numcols; i++) {
+            if (fields.get(i).equals("Vstack"))
                 numvoltsens = i;
-                System.out.println("Number of volt sensors: " + numvoltsens);
-            }
 
-        for(int i = 0; i < numcols; i++)
-            if(fields.get(i).equals("Soc")) {
+            if (fields.get(i).equals("Soc"))
                 numtempsens = i - numvoltsens - 1;
-                System.out.println("Number of temp sensors: " + numtempsens);
-            }
+
+            if(fields.get(i).equals("I"))
+                current = true;
+
+            if(fields.get(i).equals("OV"))
+                faults = true;
+        }
+
+        System.out.println("Number of volt sensors: " + numvoltsens);
+        System.out.println("Number of temp sensors: " + numtempsens);
+        System.out.println("Current: " + current);
+        System.out.println("Faults: " + faults);
 
         sc.close();
     }
@@ -121,5 +127,15 @@ public class CSVReader {
     public int getNumTempSens()
     {
         return numtempsens;
+    }
+
+    public boolean getCurrentBool()
+    {
+        return current;
+    }
+
+    public boolean getFaultsBool()
+    {
+        return faults;
     }
 }
