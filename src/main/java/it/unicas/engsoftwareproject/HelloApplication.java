@@ -4,7 +4,11 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 
 public class HelloApplication extends Application {
@@ -16,6 +20,9 @@ public class HelloApplication extends Application {
         stage.setTitle("Titolo");
         stage.sizeToScene();
         stage.show();
+
+        CSVReader reader = new CSVReader("C:\\Users\\gianf\\IdeaProjects\\EngSoftwareProject\\src\\main\\java\\it\\unicas\\engsoftwareproject\\BMS_data.csv");
+        reader.printCSV();
     }
 
     public static void main(String[] args) {

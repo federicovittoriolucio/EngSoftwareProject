@@ -4,9 +4,9 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" fx:controller="it.unicas.engsoftwareproject.controller.HelloController" prefHeight="232.0" prefWidth="333.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="232.0" prefWidth="333.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicas.engsoftwareproject.controller.HelloController">
    <children>
       <Button layoutX="141.0" layoutY="102.0" mnemonicParsing="false" onAction="#onHelloButtonClick" text="Button" />
-      <Label fx:id="welcomeText" layoutX="153.0" layoutY="64.0" text="Label" />
+      <Label fx:id="welcomeText" alignment="CENTER" contentDisplay="CENTER" layoutX="153.0" layoutY="64.0" text="Label" textAlignment="CENTER" />
    </children>
 </AnchorPane>
