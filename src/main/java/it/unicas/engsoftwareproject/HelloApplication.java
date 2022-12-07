@@ -21,9 +21,9 @@ public class HelloApplication extends Application {
         stage.sizeToScene();
         stage.show();
 
-        int T = 1000;
+        int T = 100;
 
-        CSVReader reader = new CSVReader(System.getProperty("user.dir") + "\\CSV\\" + "BMS_data.csv", T);
+        CSVReader reader = new CSVReader(System.getProperty("user.dir") + "/CSV/" + "BMS_data.csv", T);
         reader.start();
     }
 

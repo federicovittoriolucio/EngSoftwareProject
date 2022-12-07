@@ -24,6 +24,7 @@ public class CSVReader {
     private String path;
 
     private int samplenum;
+    private Timer timer;
 
     public CSVReader(String pathname, int T) throws FileNotFoundException {
         Scanner sc = new Scanner(new File(pathname));
@@ -61,11 +62,11 @@ public class CSVReader {
         numcols = fields.size();
 
         for(int i = 0; i < numcols; i++) {
-            if (fields.get(i).equals("Vstack"))
-                numvoltsens = i;
+            if (fields.get(i).contains("Vcell"))
+                numvoltsens++;
 
-            if (fields.get(i).equals("Soc"))
-                numtempsens = i - numvoltsens - 1;
+            if (fields.get(i).contains("Temp"))
+                numtempsens++;
 
             if(fields.get(i).equals("I"))
                 current = true;
@@ -73,6 +74,8 @@ public class CSVReader {
             if(fields.get(i).equals("OV"))
                 faults = true;
         }
+
+        values = new Double[200][numcols];
 
         System.out.println("Number of volt sensors: " + numvoltsens);
         System.out.println("Number of temp sensors: " + numtempsens);
@@ -136,11 +139,11 @@ public class CSVReader {
         return faults;
     }
 
-    public void start()
+    public void start() throws FileNotFoundException
     {
-        Scanner sc = new Scanner(path);
+        Scanner sc = new Scanner(new File(path));
         sc.nextLine();
-        Timer timer = new Timer();
+        timer = new Timer();
         // Viene eseguito il task, runnando update() ogni sampletime millisecondi
         timer.schedule(new TimerTask() {
             @Override
@@ -165,6 +168,8 @@ public class CSVReader {
         }
         else {
             sc.close();
+            timer.cancel();
+            timer.purge();
         }
     }
 }
