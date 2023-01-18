@@ -11,7 +11,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class CSVReader {
+public class CSVReader implements DataSource {
 
     private ArrayList<String> fields;
     private Double[][] values;
@@ -25,6 +25,7 @@ public class CSVReader {
 
     private int samplenum;
     private Timer timer;
+    private Scanner reader;
 
     public CSVReader(String pathname, int T) throws FileNotFoundException {
         Scanner sc = new Scanner(new File(pathname));
@@ -141,23 +142,23 @@ public class CSVReader {
 
     public void start() throws FileNotFoundException
     {
-        Scanner sc = new Scanner(new File(path));
-        sc.nextLine();
+        reader = new Scanner(new File(path));
+        reader.nextLine();
         timer = new Timer();
         // Viene eseguito il task, runnando update() ogni sampletime millisecondi
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                update(sc);
+                update(reader);
             }
         }, 0, sampletime);
 
     }
 
-    public void update(Scanner sc)
+    public void update(Scanner reader)
     {
-        if(sc.hasNextLine()) {
-            String line = sc.nextLine();
+        if(reader.hasNextLine()) {
+            String line = reader.nextLine();
             String[] rowline = line.split(",");
             for (int i = 0; i < numcols; i++) {
                 values[samplenum][i] = Double.parseDouble(rowline[i]);
@@ -167,9 +168,30 @@ public class CSVReader {
             samplenum++;
         }
         else {
-            sc.close();
+            reader.close();
             timer.cancel();
             timer.purge();
         }
     }
+
+    public void stop()
+    {
+        timer.cancel();
+        timer.purge();
+        System.out.println("Blocco il timer");
+    }
+
+    public void resume()
+    {
+        // Ripristina il timer associato allo scanner principale
+        timer = new Timer();
+        System.out.println("Riattivo il timer");
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                update(reader);
+            }
+        }, 0, sampletime);
+    }
+
 }
