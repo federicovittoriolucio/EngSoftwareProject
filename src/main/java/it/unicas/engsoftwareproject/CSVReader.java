@@ -185,7 +185,7 @@ public class CSVReader implements DataSource {
     {
         // Ripristina il timer associato allo scanner principale
         timer = new Timer();
-        System.out.println("Riattivo il timer");
+        System.out.println("Riattivo il timerr");
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
