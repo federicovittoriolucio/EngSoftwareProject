@@ -14,7 +14,10 @@ import java.util.TimerTask;
 public class CSVReader implements DataSource {
 
     private ArrayList<String> fields;
-    private Double[][] values;
+
+    private static int INSTANCE_COUNTER = 0;
+
+    private int id;
     private int numcols;
     private int numvoltsens;
     private int numtempsens;
@@ -22,12 +25,13 @@ public class CSVReader implements DataSource {
     private boolean current;
     private boolean faults;
     private String path;
-
     private int samplenum;
     private Timer timer;
     private Scanner reader;
 
     public CSVReader(String pathname, int T) throws FileNotFoundException {
+        id = INSTANCE_COUNTER;
+        INSTANCE_COUNTER++;
         Scanner sc = new Scanner(new File(pathname));
         path = pathname;
         sampletime = T;
@@ -76,12 +80,12 @@ public class CSVReader implements DataSource {
                 faults = true;
         }
 
-        values = new Double[200][numcols];
-
         System.out.println("Number of volt sensors: " + numvoltsens);
         System.out.println("Number of temp sensors: " + numtempsens);
         System.out.println("Current: " + current);
         System.out.println("Faults: " + faults);
+
+        DataHandler.getInstance().addModule(numvoltsens,numtempsens,current,faults,id);
 
         sc.close();
     }
@@ -101,24 +105,6 @@ public class CSVReader implements DataSource {
             System.out.println("");
         }
     }*/
-
-    public Double getValue(int row, int column)
-    {
-        return values[row][column];
-    }
-
-    public Double[] getRow(int row)
-    {
-        Double[] vec = new Double[numcols];
-        for(int i = 0; i < numcols; i++)
-            vec[i] = values[row][i];
-        return vec;
-    }
-
-    public Double[][] getValues()
-    {
-        return values;
-    }
 
     public int getNumVoltSens()
     {
@@ -152,6 +138,7 @@ public class CSVReader implements DataSource {
                 update(reader);
             }
         }, 0, sampletime);
+        // Status = running
 
     }
 
@@ -160,25 +147,25 @@ public class CSVReader implements DataSource {
         if(reader.hasNextLine()) {
             String line = reader.nextLine();
             String[] rowline = line.split(",");
-            for (int i = 0; i < numcols; i++) {
+            /*for (int i = 0; i < numcols; i++) {
                 values[samplenum][i] = Double.parseDouble(rowline[i]);
                 System.out.print(values[samplenum][i] + " ");
-            }
+            }*/
+            DataHandler.getInstance().storeData(rowline,id);
             System.out.println("");
             samplenum++;
         }
         else {
-            reader.close();
-            timer.cancel();
-            timer.purge();
+            stop();
         }
     }
 
-    public void stop()
+    public void pause()
     {
         timer.cancel();
         timer.purge();
         System.out.println("Blocco il timer");
+        // Status = pause
     }
 
     public void resume()
@@ -192,6 +179,15 @@ public class CSVReader implements DataSource {
                 update(reader);
             }
         }, 0, sampletime);
+        // Satus = running
+    }
+
+    public void stop()
+    {
+        timer.cancel();
+        timer.purge();
+        reader.close();
+        // Status = stopped
     }
 
 }

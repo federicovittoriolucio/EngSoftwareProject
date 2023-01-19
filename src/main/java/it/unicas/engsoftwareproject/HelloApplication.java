@@ -27,7 +27,7 @@ public class HelloApplication extends Application {
         CSVReader reader = new CSVReader(System.getProperty("user.dir") + "/CSV/" + "BMS_data.csv", T);
         reader.start();
         Thread.sleep(1000);
-        reader.stop();
+        reader.pause();
         Thread.sleep(5000);
         reader.resume();
 
