@@ -7,14 +7,15 @@ public class Module {
     private int id;
     final int CONST_NUMFAULTS = 6;
     final int CONST_NUMVSTACKSOC = 2;
+    final int CONST_NUMSTATS = 4;
     private ArrayList<Double>[] data = null;
-    private ArrayList<Boolean>[] faultsdata = null;
+    private ArrayList<String>[] faultsdata = null;
     private int numfields;
     private int numrows;
     private Double[] vmax = null;
     private Double[] vmin = null;
     private Double[] vavg = null;
-    private Double[] deltav = null;
+    private Double[] vdelta = null;
 
 
     public Module(int numvoltsens, int numtempsens, boolean current, boolean faults, int id)
@@ -33,7 +34,17 @@ public class Module {
         vmax = new Double[numvoltsens];
         vmin = new Double[numvoltsens];
         vavg = new Double[numvoltsens];
-        deltav = new Double[numvoltsens];
+        vdelta = new Double[numvoltsens];
+
+        for(int i = 0; i < vmax.length; i++)
+            vmax[i] = Double.NEGATIVE_INFINITY;
+        for(int i = 0; i < vmin.length; i++)
+            vmin[i] = Double.POSITIVE_INFINITY;
+        for(int i = 0; i < vavg.length; i++)
+            vavg[i] = 0.0;
+        for(int i = 0; i < vdelta.length; i++)
+            vdelta[i] = 0.0;
+
         numrows = 0;
         System.out.println(numfields);
     }
@@ -46,14 +57,68 @@ public class Module {
         }
 
         for(int i = 0; i < CONST_NUMFAULTS; i++) {
-            faultsdata[i].add(Boolean.parseBoolean(row[i + numfields]));
+            faultsdata[i].add(row[i + numfields]);
             System.out.print(faultsdata[i].get(numrows) + " ");
         }
+
+        updateMax();
+        updateMin();
+        updateAvg();
+        updateDelta();
 
         numrows++;
     }
 
+    private void updateMax(){
+        for(int i = 0; i < vmax.length; i++)
+            if(vmax[i] < data[i].get(numrows))
+                vmax[i] = data[i].get(numrows);
+    }
+    private void updateMin(){
+        for(int i = 0; i < vmin.length; i++)
+            if(vmin[i] > data[i].get(numrows))
+                vmin[i] = data[i].get(numrows);
+    }
+    private void updateAvg(){
+        for(int i = 0; i < vavg.length; i++)
+            vavg[i] = (vavg[i]*(numrows) + data[i].get(numrows))/(numrows+1);
 
+    }
+    private void updateDelta(){
+        for(int i = 0; i < vdelta.length; i++)
+            vdelta[i] = vmax[i] - vmin[i];
+    }
 
+    public Double[] getStatsRow(int cell_id){
+        Double[] row = new Double[CONST_NUMSTATS];
+        row[0] = vmax[cell_id];
+        row[1] = vmin[cell_id];
+        row[2] = vavg[cell_id];
+        row[3] = vdelta[cell_id];
 
+        return row;
+    }
+
+    public Double[] getDataRow(int row_id){
+        Double[] row = new Double[data.length];
+        for(int i = 0; i < data.length; i++){
+            row[i] = data[i].get(row_id);
+        }
+        return row;
+    }
+    public String[] getFaultsRow(int row_id){
+        String[] row = new String[faultsdata.length];
+        for(int i = 0; i < faultsdata.length; i++){
+            row[i] = faultsdata[i].get(row_id);
+        }
+        return row;
+    }
+
+    public int getNumVoltSens() {
+        return vmax.length;
+    }
+
+    public int getNumRows(){
+        return numrows;
+    }
 }

@@ -15,8 +15,8 @@ import java.util.concurrent.TimeUnit;
 public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException, InterruptedException {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
+        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("ui.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 800, 600);
         stage.setScene(scene);
         stage.setTitle("Titolo");
         stage.sizeToScene();
@@ -25,12 +25,16 @@ public class HelloApplication extends Application {
         int T = 100;
 
         CSVReader reader = new CSVReader(System.getProperty("user.dir") + "/CSV/" + "BMS_data.csv", T);
-        reader.start();
-        Thread.sleep(1000);
-        reader.pause();
-        Thread.sleep(5000);
-        reader.resume();
+        CSVReader reader2 = new CSVReader(System.getProperty("user.dir") + "/CSV/" + "BMS_data2.csv", T);
 
+        reader.start();
+        reader2.start();
+
+        Thread.sleep(15000);
+        DataHandler.getInstance().writeStatsCSV(0);
+        DataHandler.getInstance().writeDataCSV(0);
+        DataHandler.getInstance().writeStatsCSV(1);
+        DataHandler.getInstance().writeDataCSV(1);
     }
 
     public static void main(String[] args) {
