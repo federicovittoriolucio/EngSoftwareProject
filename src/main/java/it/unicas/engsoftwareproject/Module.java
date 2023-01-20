@@ -5,13 +5,15 @@ import java.util.ArrayList;
 public class Module {
 
     private int id;
-    final int CONST_NUMFAULTS = 6;
+    final int CONST_NUMFAULTS = 4;
+    final int CONST_CURRENTFAULTS = 2;
     final int CONST_NUMVSTACKSOC = 2;
     final int CONST_NUMSTATS = 4;
     private ArrayList<Double>[] data = null;
     private ArrayList<String>[] faultsdata = null;
     private int numfields;
     private int numrows;
+    private int numfaults;
     private Double[] vmax = null;
     private Double[] vmin = null;
     private Double[] vavg = null;
@@ -22,11 +24,12 @@ public class Module {
     {
         this.id = id;
         numfields = numvoltsens + numtempsens + (current ? 1:0) + CONST_NUMVSTACKSOC;
+        numfaults = CONST_NUMFAULTS+(current ? 1:0)*CONST_CURRENTFAULTS;
         data = new ArrayList[numfields];
         for(int i = 0; i < data.length; i++)
             data[i] = new ArrayList();
         if(faults) {
-            faultsdata = new ArrayList[CONST_NUMFAULTS];
+            faultsdata = new ArrayList[numfaults];
             for(int i = 0; i < faultsdata.length; i++)
                 faultsdata[i] = new ArrayList();
         }
@@ -56,10 +59,11 @@ public class Module {
             System.out.print(data[i].get(numrows) + " ");
         }
 
-        for(int i = 0; i < CONST_NUMFAULTS; i++) {
-            faultsdata[i].add(row[i + numfields]);
-            System.out.print(faultsdata[i].get(numrows) + " ");
-        }
+        if(faultsdata != null)
+            for(int i = 0; i < numfaults; i++) {
+                faultsdata[i].add(row[i + numfields]);
+                System.out.print(faultsdata[i].get(numrows) + " ");
+            }
 
         updateMax();
         updateMin();
@@ -107,10 +111,13 @@ public class Module {
         return row;
     }
     public String[] getFaultsRow(int row_id){
+        if(faultsdata == null)
+            return null;
+
         String[] row = new String[faultsdata.length];
-        for(int i = 0; i < faultsdata.length; i++){
+        for(int i = 0; i < faultsdata.length; i++)
             row[i] = faultsdata[i].get(row_id);
-        }
+
         return row;
     }
 
@@ -120,5 +127,43 @@ public class Module {
 
     public int getNumRows(){
         return numrows;
+    }
+
+    public double getVMax()
+    {
+        double max = Double.NEGATIVE_INFINITY;
+        for(int i = 0; i < vmax.length; i++)
+            if(max < vmax[i])
+                max = vmax[i];
+        return max;
+    }
+
+    public double getVMin()
+    {
+        double min = Double.POSITIVE_INFINITY;
+        for(int i = 0; i < vmin.length; i++)
+            if(min > vmin[i])
+                min = vmin[i];
+        return min;
+    }
+
+    public double getMaxDelta()
+    {
+        double deltamax = 0;
+        for(int i = 0; i < vdelta.length; i++)
+            if(deltamax < vdelta[i])
+                deltamax = vdelta[i];
+        return deltamax;
+    }
+
+    public double getVAvg()
+    {
+        double avg = 0;
+        for(int i = 0; i< vavg.length; i++)
+            avg += vavg[i];
+
+        avg = avg / vavg.length;
+
+        return avg;
     }
 }

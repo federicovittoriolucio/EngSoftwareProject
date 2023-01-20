@@ -26,15 +26,28 @@ public class HelloApplication extends Application {
 
         CSVReader reader = new CSVReader(System.getProperty("user.dir") + "/CSV/" + "BMS_data.csv", T);
         CSVReader reader2 = new CSVReader(System.getProperty("user.dir") + "/CSV/" + "BMS_data2.csv", T);
+        CSVReader reader3 = new CSVReader(System.getProperty("user.dir") + "/CSV/" + "BMS_data3.csv", T);
+        CSVReader reader4 = new CSVReader(System.getProperty("user.dir") + "/CSV/" + "BMS_data4.csv", T);
+        CSVReader reader5 = new CSVReader(System.getProperty("user.dir") + "/CSV/" + "BMS_data5.csv", T);
 
         reader.start();
         reader2.start();
+        reader3.start();
+        reader4.start();
+        reader5.start();
 
         Thread.sleep(15000);
         DataHandler.getInstance().writeStatsCSV(0);
         DataHandler.getInstance().writeDataCSV(0);
         DataHandler.getInstance().writeStatsCSV(1);
         DataHandler.getInstance().writeDataCSV(1);
+        DataHandler.getInstance().writeStatsCSV(2);
+        DataHandler.getInstance().writeDataCSV(2);
+        DataHandler.getInstance().writeStatsCSV(3);
+        DataHandler.getInstance().writeDataCSV(3);
+        DataHandler.getInstance().writeStatsCSV(4);
+        DataHandler.getInstance().writeDataCSV(4);
+
     }
 
     public static void main(String[] args) {
