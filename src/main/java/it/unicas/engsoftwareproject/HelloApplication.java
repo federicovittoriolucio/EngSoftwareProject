@@ -15,12 +15,14 @@ public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException, InterruptedException {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("ui.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 800, 600);
+        Scene scene = new Scene(fxmlLoader.load());
         // To use bootstrap:
         scene.getStylesheets().add("org/kordamp/bootstrapfx/bootstrapfx.css");
+        scene.getStylesheets().getClass().getResource("CustomStylesheet.css");
         stage.setScene(scene);
         stage.setTitle("Titolo");
         stage.sizeToScene();
+        stage.setResizable(false);
         stage.show();
 
         int T = 100;

@@ -5,11 +5,11 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="mainpane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicas.engsoftwareproject.controller.HelloController">
+<AnchorPane fx:id="mainpane" prefHeight="280.0" prefWidth="375.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicas.engsoftwareproject.controller.HelloController">
    <children>
-      <Button layoutX="463.0" layoutY="187.0" mnemonicParsing="false" onAction="#startSimulation" styleClass="btn, btn-sm, btn-default" text="Start Simulation" />
-      <ProgressBar fx:id="progressBar" layoutX="322.0" layoutY="132.0" prefWidth="200.0" progress="0.0" rotate="270.0" styleClass="progress-bar-primary" />
-      <Button layoutX="14.0" layoutY="16.0" mnemonicParsing="false" onAction="#addModule" styleClass="btn, btn-sm, btn-default" text="Add Module" />
-      <VBox fx:id="vboxlabels" layoutX="16.0" layoutY="56.0" prefHeight="200.0" prefWidth="204.0" />
+      <Button layoutX="143.0" layoutY="16.0" mnemonicParsing="false" onAction="#startSimulation" styleClass="btn, btn-sm, btn-default" text="Start Simulation" />
+      <ProgressBar fx:id="progressBar" layoutX="173.0" layoutY="145.0" prefWidth="200.0" progress="0.0" rotate="270.0" styleClass="progress-bar-primary" />
+      <Button layoutX="14.0" layoutY="16.0" mnemonicParsing="false" onAction="#addModule" prefHeight="26.0" prefWidth="101.0" styleClass="btn, btn-sm, btn-default" text="Add Module" textAlignment="CENTER" />
+      <VBox fx:id="vboxlabels" layoutX="14.0" layoutY="47.0" prefHeight="220.0" prefWidth="230.0" styleClass="module-box" stylesheets="@CustomStylesheet.css" />
    </children>
 </AnchorPane>

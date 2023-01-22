@@ -1,0 +1,10 @@
+.module-box {
+    -fx-background: #5bc0de;
+    -fx-background-color: #9999;
+    -fx-border-color: #9999;
+    -fx-background-radius: 3px;
+    -fx-border-radius: 3px;
+    -fx-background-insets: 0;
+    -fx-padding: 0.667em 0.75em 0.667em 0.75em;
+    /* 10px */
+    -fx-font-size: 0.95em; }
