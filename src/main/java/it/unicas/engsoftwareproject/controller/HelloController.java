@@ -7,6 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -31,9 +32,16 @@ public class HelloController {
     private Button addModuleButton;
     @FXML
     private VBox vboxlabels;
+    @FXML
+    private AnchorPane mainpane;
 
     final int CONST_SPACING = 5;
     int modulecounter = 0;
+
+    public HelloController(){
+        mainpane = new AnchorPane();
+        mainpane.setStyle("");
+    }
 
     @FXML
     protected void startSimulation(){
@@ -60,6 +68,10 @@ public class HelloController {
             moduleNameLabels.get(modulecounter).setFont(new Font(15));
             buttonEraseLabels.add(new Button("x"));
             buttonEraseLabels.get(modulecounter).setOnAction(e -> eraseElement(e));
+            buttonEraseLabels.get(modulecounter).getStyleClass().add("btn-sm");
+            buttonEraseLabels.get(modulecounter).getStyleClass().add("btn-default");
+            buttonEraseLabels.get(modulecounter).prefWidth(6);
+            buttonEraseLabels.get(modulecounter).prefHeight(6);
             hbox.add(new HBox(moduleNameLabels.get(modulecounter),buttonEraseLabels.get(modulecounter)));
             hbox.get(modulecounter).setSpacing(CONST_SPACING);
             hbox.get(modulecounter).setAlignment(Pos.CENTER);
@@ -73,6 +85,12 @@ public class HelloController {
     {
         vboxlabels.getChildren().remove(((Button)e.getSource()).getParent());
         hbox.remove(((Button)e.getSource()).getParent());
+        for(int i = 0; i < buttonEraseLabels.size(); i++)
+            if(e.getSource() == buttonEraseLabels.get(i))
+            {
+                buttonEraseLabels.remove(i);
+                moduleNameLabels.remove(i);
+            }
         modulecounter--;
         System.out.println(modulecounter);
     }
