@@ -35,13 +35,8 @@ public class HelloController {
     @FXML
     private AnchorPane mainpane;
 
-    final int CONST_SPACING = 5;
+    final int CONST_SPACING = 12;
     int modulecounter = 0;
-
-    public HelloController(){
-        mainpane = new AnchorPane();
-        mainpane.setStyle("");
-    }
 
     @FXML
     protected void startSimulation(){
@@ -65,7 +60,7 @@ public class HelloController {
 
             moduleNameLabels.add(new Label(file.getName()));
             moduleNameLabels.get(modulecounter).setAlignment(Pos.CENTER);
-            moduleNameLabels.get(modulecounter).setFont(new Font(15));
+            moduleNameLabels.get(modulecounter).setFont(new Font(16));
             buttonEraseLabels.add(new Button("x"));
             buttonEraseLabels.get(modulecounter).setOnAction(e -> eraseElement(e));
             buttonEraseLabels.get(modulecounter).getStyleClass().add("btn-sm");
