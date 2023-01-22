@@ -83,4 +83,6 @@ public class DataHandler {
         }
         fw.close();
     }
+
+    public int getActiveModules() {return activemodules;}
 }

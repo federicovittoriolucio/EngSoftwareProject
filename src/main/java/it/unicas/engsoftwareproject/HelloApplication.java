@@ -11,19 +11,20 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
-
 public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException, InterruptedException {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("ui.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 800, 600);
+        // To use bootstrap:
+        scene.getStylesheets().add("org/kordamp/bootstrapfx/bootstrapfx.css");
         stage.setScene(scene);
         stage.setTitle("Titolo");
         stage.sizeToScene();
         stage.show();
 
         int T = 100;
-
+/*
         CSVReader reader = new CSVReader(System.getProperty("user.dir") + "/CSV/" + "BMS_data.csv", T);
         CSVReader reader2 = new CSVReader(System.getProperty("user.dir") + "/CSV/" + "BMS_data2.csv", T);
         CSVReader reader3 = new CSVReader(System.getProperty("user.dir") + "/CSV/" + "BMS_data3.csv", T);
@@ -47,7 +48,7 @@ public class HelloApplication extends Application {
         DataHandler.getInstance().writeDataCSV(3);
         DataHandler.getInstance().writeStatsCSV(4);
         DataHandler.getInstance().writeDataCSV(4);
-
+*/
     }
 
     public static void main(String[] args) {
