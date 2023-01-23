@@ -107,10 +107,11 @@ public class MenuController {
 
     void eraseElement(ActionEvent e)
     {
-        moduleNameLabels.remove(((Button)e.getSource()).getParent().getChildrenUnmodifiable().get(0));
-        vboxlabels.getChildren().remove(((Button)e.getSource()).getParent());
-        hbox.remove(((Button)e.getSource()).getParent());
-        buttonEraseLabels.remove(e.getSource());
+        Button b = (Button) e.getSource();
+        moduleNameLabels.remove(b.getParent().getChildrenUnmodifiable().get(0));
+        vboxlabels.getChildren().remove(b.getParent());
+        hbox.remove(b.getParent());
+        buttonEraseLabels.remove(b);
         modulecounter--;
         System.out.println(modulecounter);
     }
