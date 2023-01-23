@@ -15,7 +15,7 @@ public class DataHandler {
         return instance;
     }
 
-    final int CONST_NUMMODULES = 6;
+    final public int CONST_NUMMODULES = 6;
     private int activemodules = 0;
 
     private Module[] modules = null;

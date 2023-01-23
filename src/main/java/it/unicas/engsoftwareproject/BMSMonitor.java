@@ -5,16 +5,17 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
 
-public class HelloApplication extends Application {
+public class BMSMonitor extends Application {
+    public static ArrayList<Stage> stagelist;
     @Override
     public void start(Stage stage) throws IOException, InterruptedException {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("ui.fxml"));
+
+        stagelist = new ArrayList<>();
+        stagelist.add(stage);
+        FXMLLoader fxmlLoader = new FXMLLoader(BMSMonitor.class.getResource("menu-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         // To use bootstrap:
         scene.getStylesheets().add("org/kordamp/bootstrapfx/bootstrapfx.css");
@@ -26,8 +27,8 @@ public class HelloApplication extends Application {
         stage.show();
 
         int T = 100;
-/*
-        CSVReader reader = new CSVReader(System.getProperty("user.dir") + "/CSV/" + "BMS_data.csv", T);
+
+       /* CSVReader reader = new CSVReader(System.getProperty("user.dir") + "/CSV/" + "BMS_data.csv", T);
         CSVReader reader2 = new CSVReader(System.getProperty("user.dir") + "/CSV/" + "BMS_data2.csv", T);
         CSVReader reader3 = new CSVReader(System.getProperty("user.dir") + "/CSV/" + "BMS_data3.csv", T);
         CSVReader reader4 = new CSVReader(System.getProperty("user.dir") + "/CSV/" + "BMS_data4.csv", T);
@@ -50,7 +51,7 @@ public class HelloApplication extends Application {
         DataHandler.getInstance().writeDataCSV(3);
         DataHandler.getInstance().writeStatsCSV(4);
         DataHandler.getInstance().writeDataCSV(4);
-*/
+        */
     }
 
     public static void main(String[] args) {

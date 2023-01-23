@@ -1,8 +1,5 @@
 package it.unicas.engsoftwareproject;
 
-import it.unicas.engsoftwareproject.controller.HelloController;
-import javafx.stage.Stage;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
