@@ -26,7 +26,6 @@ public class DataHandler {
 
     public void addModule(int numvoltsens, int numtempsens, boolean current, boolean faults, int id)
     {
-        //TODO: SADDA FERMA A 6
         if(activemodules < CONST_NUMMODULES) {
             modules[activemodules] = new Module(numvoltsens, numtempsens, current, faults, id);
             activemodules++;
