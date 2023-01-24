@@ -21,7 +21,7 @@ public class MenuController {
     private TextField timefield;
     @FXML
     protected void startSimulation(ActionEvent event){
-        if (!timefield.getText().matches("\\d*")){
+        if (!timefield.getText().matches("\\d*") || timefield.getText().isEmpty()){
 
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Alert");
