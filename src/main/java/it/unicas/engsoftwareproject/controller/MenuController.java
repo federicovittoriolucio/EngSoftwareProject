@@ -21,15 +21,13 @@ public class MenuController {
     private TextField timefield;
     @FXML
     protected void startSimulation(ActionEvent event){
-        if (!timefield.getText().matches("\\d*") || timefield.getText().isEmpty()){
 
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Alert");
-            alert.setHeaderText("You can't use the specified sample time. Insert a valid sample time.");
-            DialogPane dialogPane = alert.getDialogPane();
-            dialogPane.getStylesheets().add("org/kordamp/bootstrapfx/bootstrapfx.css");
-            dialogPane.getStyleClass().add("btn-sm");
-            alert.show();
+        if (listview.getItems().size() == 0) {
+            showAlert("Alert","You haven't provided any data source.");
+            return;
+        }
+        if (!timefield.getText().matches("\\d*") || timefield.getText().isEmpty()){
+            showAlert("Alert","You can't use the specified sample time. Insert a valid sample time.");
             return;
         }
 
@@ -60,13 +58,7 @@ public class MenuController {
     {
         if(listview.getItems().size() >= DataHandler.getInstance().CONST_NUMMODULES)
         {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Alert");
-            alert.setHeaderText("You can't add more than " + DataHandler.getInstance().CONST_NUMMODULES + " modules.");
-            DialogPane dialogPane = alert.getDialogPane();
-            dialogPane.getStylesheets().add("org/kordamp/bootstrapfx/bootstrapfx.css");
-            dialogPane.getStyleClass().add("btn-sm");
-            alert.show();
+            showAlert("Alert","You can't add more than " + DataHandler.getInstance().CONST_NUMMODULES + " modules.");
             return;
         }
 
@@ -83,5 +75,16 @@ public class MenuController {
     {
         listview.getItems().remove(listview.getSelectionModel().getSelectedItem());
         System.out.println(listview.getItems().size());
+    }
+
+    private void showAlert(String title, String description)
+    {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(description);
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.getStylesheets().add("org/kordamp/bootstrapfx/bootstrapfx.css");
+        dialogPane.getStyleClass().add("btn-sm");
+        alert.show();
     }
 }

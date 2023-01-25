@@ -1,12 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="232.0" prefWidth="333.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicas.engsoftwareproject.controller.MonitorController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicas.engsoftwareproject.controller.MonitorController">
    <children>
-      <Button layoutX="141.0" layoutY="102.0" mnemonicParsing="false" onAction="#backToMenu" text="Button" />
-      <Label fx:id="welcomeText" alignment="CENTER" contentDisplay="CENTER" layoutX="153.0" layoutY="64.0" text="Label" textAlignment="CENTER" />
+      <VBox prefHeight="400.0" prefWidth="500.0">
+         <children>
+            <TabPane fx:id="tabpane" prefHeight="350.0" prefWidth="500.0" tabClosingPolicy="UNAVAILABLE" />
+            <HBox prefHeight="50.0" prefWidth="500.0" styleClass="monitor-menu" stylesheets="@CustomStylesheet.css">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#backToMenu" styleClass="btn, btn-sm, btn-default" text="Stop Simulation" />
+               </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+               <padding>
+                  <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
+               </padding>
+            </HBox>
+         </children>
+      </VBox>
    </children>
 </AnchorPane>
