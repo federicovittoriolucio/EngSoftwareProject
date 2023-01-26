@@ -84,4 +84,6 @@ public class DataHandler {
     }
 
     public int getActiveModules() {return activemodules;}
+
+    public Module getModule(int index) {return modules[index];}
 }

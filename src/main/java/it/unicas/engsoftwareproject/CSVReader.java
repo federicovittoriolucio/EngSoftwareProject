@@ -149,8 +149,9 @@ public class CSVReader implements DataSource {
                 System.out.print(values[samplenum][i] + " ");
             }*/
             DataHandler.getInstance().storeData(rowline,id);
-            System.out.println("");
+
             samplenum++;
+
         }
         else {
             stop();

@@ -62,37 +62,52 @@ public class MonitorController {
         for(int i = 0; i < readers.length; i++) {
             Tab tab = new Tab("Module" + (i+1) );
             HBox window_hbox = new HBox();
-            VBox vbox = new VBox();
+            VBox indicators_vbox = new VBox();
+            VBox stats_vbox = new VBox();
             HBox volt_hbox = new HBox();
             HBox temp_hbox = new HBox();
 
-            vbox.getChildren().addAll(volt_hbox, temp_hbox);
-            window_hbox.getChildren().add(vbox);
+            indicators_vbox.getChildren().addAll(volt_hbox, temp_hbox);
+            window_hbox.getChildren().addAll(indicators_vbox,stats_vbox);
             tab.setContent(window_hbox);
             tabpane.getTabs().add(tab);
 
             // HBox.setHgrow(window_hbox, Priority.ALWAYS); ? pare che non faccia nulla.
 
+            indicators_vbox.setSpacing(50);
+
             Gauge[] volt_gauge = new Gauge[readers[i].getNumVoltSens()];
             Gauge[] temp_gauge = new Gauge[readers[i].getNumTempSens()];
+
+            if(readers[i].getCurrentBool()) {
+                Gauge curr_gauge = GaugeBuilder.create()
+                        .maxValue(100)
+                        .barColor(Color.GREEN)
+                        .skinType(Gauge.SkinType.LINEAR)
+                        .title("Current (A)")
+                        .prefSize(100, 300)
+                        .build();
+                stats_vbox.getChildren().add(curr_gauge);
+            }
+
             for(int j = 0; j < readers[i].getNumVoltSens(); j++) {
                 volt_gauge[j] = GaugeBuilder.create()
                         .maxValue(5)
                         .barColor(Color.GREEN)
                         .skinType(Gauge.SkinType.LINEAR)
-                        .title("Tensione")
-                        .prefSize(120, 300)
+                        .title("Cella " + (j+1) + " (V)")
+                        .prefSize(100, 300)
                         .build();
 
                 volt_hbox.getChildren().add(volt_gauge[j]);
             }
             for(int j = 0; j < readers[i].getNumTempSens(); j++) {
                 temp_gauge[j] = GaugeBuilder.create()
-                        .maxValue(100)
+                        .maxValue(70)
                         .barColor(Color.BLUE)
                         .skinType(Gauge.SkinType.LINEAR)
-                        .title("Temperatura")
-                        .prefSize(120, 300)
+                        .title("Temp " + (j+1) + " (°C)")
+                        .prefSize(100, 300)
                         .build();
 
                 temp_hbox.getChildren().add(temp_gauge[j]);
