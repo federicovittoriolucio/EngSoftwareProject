@@ -65,6 +65,8 @@ public class Module {
                 System.out.print(faultsdata[i].get(numrows) + " ");
             }
 
+        System.out.println("");
+
         updateMax();
         updateMin();
         updateAvg();
@@ -166,4 +168,6 @@ public class Module {
 
         return avg;
     }
+
+    public int getNumrows(){return numrows;}
 }

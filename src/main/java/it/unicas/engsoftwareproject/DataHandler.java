@@ -1,6 +1,9 @@
 package it.unicas.engsoftwareproject;
 
 
+import it.unicas.engsoftwareproject.controller.MonitorController;
+
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -33,8 +36,11 @@ public class DataHandler {
 
     }
 
-    public void storeData(String[] splitline, int id_module) {
-        modules[id_module].addRow(splitline);
+    public void updateData(String[] splitline, int id_module) {
+        Module m = modules[id_module];
+        int row = m.getNumRows();
+        m.addRow(splitline);
+        MonitorController.updateGraphics(m.getDataRow(row), m.getFaultsRow(row), id_module);
     }
 
     public void writeStatsCSV(int id_module) throws IOException {
@@ -85,5 +91,16 @@ public class DataHandler {
 
     public int getActiveModules() {return activemodules;}
 
-    public Module getModule(int index) {return modules[index];}
+    public DataSource[] genReaders(String[] absolutepaths, int sampletime) throws FileNotFoundException {
+        if(absolutepaths[0].contains(".csv")) {
+            CSVReader[] readers = new CSVReader[absolutepaths.length];
+
+            for (int i = 0; i < readers.length; i++)
+                readers[i] = new CSVReader(absolutepaths[i], sampletime);
+
+            return readers;
+        }
+        return null;
+    }
+
 }

@@ -144,12 +144,7 @@ public class CSVReader implements DataSource {
         if(reader.hasNextLine()) {
             String line = reader.nextLine();
             String[] rowline = line.split(",");
-            /*for (int i = 0; i < numcols; i++) {
-                values[samplenum][i] = Double.parseDouble(rowline[i]);
-                System.out.print(values[samplenum][i] + " ");
-            }*/
-            DataHandler.getInstance().storeData(rowline,id);
-
+            DataHandler.getInstance().updateData(rowline,id);
             samplenum++;
 
         }
@@ -186,6 +181,10 @@ public class CSVReader implements DataSource {
         timer.purge();
         reader.close();
         // Status = stopped
+    }
+    static public void resetCounter()
+    {
+        INSTANCE_COUNTER = 0;
     }
 
 }
