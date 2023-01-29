@@ -14,9 +14,9 @@
             <TabPane fx:id="tabpane" prefHeight="350.0" prefWidth="500.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS" />
             <HBox prefHeight="50.0" prefWidth="500.0" spacing="12.0" styleClass="monitor-menu" stylesheets="@CustomStylesheet.css">
                <children>
-                  <Button mnemonicParsing="false" onAction="#backToMenu" styleClass="btn, btn-sm, btn-default" text="Stop Simulation" />
-                  <Button mnemonicParsing="false" onAction="#pauseModule" styleClass="btn, btn-sm, btn-default" text="Pause Simulation" />
-                  <Button mnemonicParsing="false" onAction="#resumeModule" styleClass="btn, btn-sm, btn-default" text="Resume Simulation" />
+                  <Button mnemonicParsing="false" onAction="#backToMenu" styleClass="btn, btn-sm, btn-default" text="Save and Exit" />
+                  <Button mnemonicParsing="false" onAction="#pauseModule" styleClass="btn, btn-sm, btn-default" text="Pause Sim. Module" />
+                  <Button mnemonicParsing="false" onAction="#resumeModule" styleClass="btn, btn-sm, btn-default" text="Resume Sim. Module" />
                </children>
                <VBox.margin>
                   <Insets />

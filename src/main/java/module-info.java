@@ -2,6 +2,7 @@ module it.unicas.engsoftwareproject {
     requires javafx.controls;
     requires javafx.fxml;
     requires eu.hansolo.medusa;
+    requires eu.hansolo.tilesfx;
 
 
     opens it.unicas.engsoftwareproject to javafx.fxml;

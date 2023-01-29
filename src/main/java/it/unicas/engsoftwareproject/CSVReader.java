@@ -26,9 +26,13 @@ public class CSVReader implements DataSource {
     private Timer timer;
     private Scanner reader;
 
+    enum State {INACTIVE, RUNNING, PAUSE, END}
+    State state;
+
     public CSVReader(String pathname, int T) throws FileNotFoundException {
         id = INSTANCE_COUNTER;
         INSTANCE_COUNTER++;
+        state = State.INACTIVE;
         Scanner sc = new Scanner(new File(pathname));
         path = pathname;
         sampletime = T;
@@ -127,6 +131,7 @@ public class CSVReader implements DataSource {
     {
         reader = new Scanner(new File(path));
         reader.nextLine();
+        state = State.RUNNING;
         timer = new Timer();
         // Viene eseguito il task, runnando update() ogni sampletime millisecondi
         timer.schedule(new TimerTask() {
@@ -149,30 +154,35 @@ public class CSVReader implements DataSource {
 
         }
         else {
+            state = State.END;
             stop();
         }
     }
 
     public void pause()
     {
-        timer.cancel();
-        timer.purge();
-        System.out.println("Blocco il timer");
-        // Status = pause
+        if(state == State.RUNNING) {
+            state = State.PAUSE;
+            timer.cancel();
+            timer.purge();
+            System.out.println("Blocco il timer");
+        }
     }
 
     public void resume()
     {
-        // Ripristina il timer associato allo scanner principale
-        timer = new Timer();
-        System.out.println("Riattivo il timer");
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                update(reader);
-            }
-        }, 0, sampletime);
-        // Satus = running
+        if(state == State.PAUSE) {
+            // Ripristina il timer associato allo scanner principale
+            state = State.RUNNING;
+            timer = new Timer();
+            System.out.println("Riattivo il timer");
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    update(reader);
+                }
+            }, 0, sampletime);
+        }
     }
 
     public void stop()
