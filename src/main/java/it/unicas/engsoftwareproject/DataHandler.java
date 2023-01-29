@@ -40,7 +40,7 @@ public class DataHandler {
         Module m = modules[id_module];
         int row = m.getNumRows();
         m.addRow(splitline);
-        MonitorController.updateGraphics(m.getDataRow(row), m.getFaultsRow(row), id_module);
+        MonitorController.updateGraphics(m.getDataRow(row), m.getFaultsRow(row), m.getStats(), id_module);
     }
 
     public void writeStatsCSV(int id_module) throws IOException {
@@ -103,4 +103,7 @@ public class DataHandler {
         return null;
     }
 
+    public void resetActivemodules() {
+        activemodules = 0;
+    }
 }

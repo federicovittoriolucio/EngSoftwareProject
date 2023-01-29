@@ -170,4 +170,14 @@ public class Module {
     }
 
     public int getNumrows(){return numrows;}
+
+    public Double[] getStats()
+    {
+        Double[] stats = new Double[4];
+        stats[0] = getVMax();
+        stats[1] = getVMin();
+        stats[2] = getVAvg();
+        stats[3] = getMaxDelta();
+        return  stats;
+    }
 }
