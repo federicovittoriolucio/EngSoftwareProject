@@ -4,7 +4,6 @@ module it.unicas.engsoftwareproject {
     requires eu.hansolo.medusa;
     requires eu.hansolo.tilesfx;
 
-
     opens it.unicas.engsoftwareproject to javafx.fxml;
     exports it.unicas.engsoftwareproject;
     exports it.unicas.engsoftwareproject.controller;

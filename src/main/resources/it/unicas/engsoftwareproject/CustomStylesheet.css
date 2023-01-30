@@ -8,3 +8,15 @@
     -fx-padding: 0.667em 0.75em 0.667em 0.75em;
     /* 10px */
     -fx-font-size: 0.95em; }
+
+.gauge-hbox {
+    -fx-background-color: #333333;
+    -fx-background-radius: 5px;
+    -fx-padding: 20px 20px 20px 20px;
+}
+
+.window-hbox {
+    -fx-background-color: #262626;
+    -fx-padding: 20px 20px 20px 20px;
+    -fx-spacing: 20px;
+}
