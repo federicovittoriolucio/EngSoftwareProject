@@ -2,6 +2,7 @@ package it.unicas.engsoftwareproject;
 
 
 import it.unicas.engsoftwareproject.controller.MonitorController;
+import javafx.application.Platform;
 
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -40,7 +41,7 @@ public class DataHandler {
         Module m = modules[id_module];
         int row = m.getNumRows();
         m.addRow(splitline);
-        MonitorController.updateGraphics(m.getDataRow(row), m.getFaultsRow(row), m.getStats(), id_module);
+        Platform.runLater(() -> MonitorController.updateGraphics(m.getDataRow(row), m.getFaultsRow(row), m.getStats(), id_module));
     }
 
     public void writeStatsCSV(int id_module) throws IOException {
