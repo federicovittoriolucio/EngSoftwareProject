@@ -74,10 +74,10 @@ public class MonitorController {
         if(readers[id_module].getCurrentBool())
             curr_gauges[id_module].valueProperty().set(data[currindex]);
 
-        vmax_labels[id_module].setText("Max Voltage:" + String.format("%.3f", stats[0]));
-        vmin_labels[id_module].setText("Min Voltage:" + String.format("%.3f", stats[1]));
-        vavg_labels[id_module].setText("Avg Voltage:" + String.format("%.3f", stats[2]));
-        vdelta_labels[id_module].setText("Delta Voltage:" + String.format("%.3f", stats[3]));
+        vmax_labels[id_module].setText("Max Voltage: " + String.format("%.3f", stats[0]));
+        vmin_labels[id_module].setText("Min Voltage: " + String.format("%.3f", stats[1]));
+        vavg_labels[id_module].setText("Avg Voltage: " + String.format("%.3f", stats[2]));
+        vdelta_labels[id_module].setText("Delta Voltage: " + String.format("%.3f", stats[3]));
 
         if (faults != null) {
 

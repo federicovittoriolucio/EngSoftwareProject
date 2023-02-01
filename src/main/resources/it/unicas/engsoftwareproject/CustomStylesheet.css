@@ -1,9 +1,7 @@
 .monitor-menu {
-    -fx-background: #5bc0de;
-    -fx-background-color: #9999;
-    -fx-border-color: #9999;
-    -fx-background-radius: 3px;
-    -fx-border-radius: 3px;
+    -fx-background: #4b4b4b;
+    -fx-background-color: #4b4b4b;
+    -fx-border-color: #4b4b4b;
     -fx-background-insets: 0;
     -fx-padding: 0.667em 0.75em 0.667em 0.75em;
     /* 10px */

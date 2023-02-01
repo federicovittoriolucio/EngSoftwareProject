@@ -45,6 +45,7 @@ public class MenuController {
         }
         // To use bootstrap:
         monitor_scene.getStylesheets().add(BMSMonitor.class.getResource("CustomStylesheet.css").toExternalForm());
+        monitor_scene.getStylesheets().add("org/kordamp/bootstrapfx/bootstrapfx.css");
         monitor_stage.setScene(monitor_scene);
         monitor_stage.setTitle("BMS Monitor");
         monitor_stage.sizeToScene();
