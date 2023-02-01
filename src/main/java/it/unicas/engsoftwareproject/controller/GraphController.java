@@ -94,7 +94,8 @@ public class GraphController {
             }
 
             checkboxes[i][socindex] = new CheckBox("State of Charge");
-            checkboxes[i][currindex] = new CheckBox("Current");
+            if(module.getCurrentBool())
+                checkboxes[i][currindex] = new CheckBox("Current");
 
             for(CheckBox check : checkboxes[i])
                 check.getStyleClass().add("checkbox");
@@ -120,7 +121,7 @@ public class GraphController {
 
     private XYChart createGraph(int module_id){
 
-        int pointsnum = 10;
+        int pointsnum = 50;
         int endvalue = DataHandler.getInstance().getSampletime() * pointsnum;
 
         ArrayList<XYChartItem> points  = new ArrayList<>();

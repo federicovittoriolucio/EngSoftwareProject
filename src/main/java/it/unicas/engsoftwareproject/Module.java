@@ -16,6 +16,7 @@ public class Module {
     private int numfaults;
     private int numvoltsens;
     private int numtempsens;
+    private boolean current;
     private Double[] vmax = null;
     private Double[] vmin = null;
     private Double[] vavg = null;
@@ -29,6 +30,7 @@ public class Module {
         numfaults = CONST_NUMFAULTS+(current ? 1:0)*CONST_CURRENTFAULTS;
         this.numvoltsens = numvoltsens;
         this.numtempsens = numtempsens;
+        this.current = current;
         data = new ArrayList[numfields];
         for(int i = 0; i < data.length; i++)
             data[i] = new ArrayList();
@@ -190,5 +192,9 @@ public class Module {
 
     public int getNumfields() {
         return numfields;
+    }
+
+    public boolean getCurrentBool() {
+        return current;
     }
 }
