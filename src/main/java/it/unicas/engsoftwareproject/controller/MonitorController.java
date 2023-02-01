@@ -2,27 +2,23 @@ package it.unicas.engsoftwareproject.controller;
 
 import eu.hansolo.medusa.Gauge;
 import eu.hansolo.medusa.GaugeBuilder;
-import eu.hansolo.tilesfx.Tile;
 
-import eu.hansolo.tilesfx.TileBuilder;
-import eu.hansolo.tilesfx.skins.BarChartItem;
-import eu.hansolo.tilesfx.tools.BarChartItemBuilder;
 import it.unicas.engsoftwareproject.BMSMonitor;
 import it.unicas.engsoftwareproject.CSVReader;
 import it.unicas.engsoftwareproject.DataHandler;
 import it.unicas.engsoftwareproject.DataSource;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
+import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MonitorController {
 
@@ -159,14 +155,32 @@ public class MonitorController {
     }
 
     @FXML
+    protected void showGraphWindow(){
+
+        Stage graph_stage = new Stage();
+        BMSMonitor.stagelist.add(graph_stage);
+        FXMLLoader fxmlLoader = new FXMLLoader(BMSMonitor.class.getResource("graph-view.fxml"));
+        Scene graph_scene = null;
+        try {
+            graph_scene = new Scene(fxmlLoader.load());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        // To use bootstrap:
+        graph_scene.getStylesheets().add(BMSMonitor.class.getResource("CustomStylesheet.css").toExternalForm());
+        graph_scene.getStylesheets().add("org/kordamp/bootstrapfx/bootstrapfx.css");
+        graph_stage.setScene(graph_scene);
+        graph_stage.setTitle("Graphs");
+        graph_stage.sizeToScene();
+        graph_stage.show();
+    }
+
+    @FXML
     public void initialize() throws IOException {
 
         readers = DataHandler.getInstance().genReaders(absolutepaths, sampletime);
 
-        this.getClass().getResource("CustomStylesheet.css");
         initGraphics();
-
-
 
         for(int i = 0; i < readers.length; i++)
             readers[i].start();

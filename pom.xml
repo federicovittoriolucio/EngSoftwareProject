@@ -53,6 +53,16 @@
             <artifactId>tilesfx</artifactId>
             <version>17.1.17</version>
         </dependency>
+        <dependency>
+            <groupId>eu.hansolo.fx</groupId>
+            <artifactId>charts</artifactId>
+            <version>17.1.27</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.hansolo</groupId>
+            <artifactId>toolboxfx</artifactId>
+            <version>17.0.33</version>
+        </dependency>
     </dependencies>
 
     <build>

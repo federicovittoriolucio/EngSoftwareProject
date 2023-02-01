@@ -12,6 +12,7 @@ import java.time.format.DateTimeFormatter;
 
 public class DataHandler {
     private static DataHandler instance = null;
+    private int sampletime;
 
     public static synchronized DataHandler getInstance(){
         if(instance == null)
@@ -99,6 +100,8 @@ public class DataHandler {
             for (int i = 0; i < readers.length; i++)
                 readers[i] = new CSVReader(absolutepaths[i], sampletime);
 
+            this.sampletime = sampletime;
+
             return readers;
         }
         return null;
@@ -106,5 +109,13 @@ public class DataHandler {
 
     public void resetActivemodules() {
         activemodules = 0;
+    }
+
+    public Module getModule(int id_module){
+        return modules[id_module];
+    }
+
+    public int getSampletime(){
+        return sampletime;
     }
 }

@@ -14,6 +14,8 @@ public class Module {
     private int numfields;
     private int numrows;
     private int numfaults;
+    private int numvoltsens;
+    private int numtempsens;
     private Double[] vmax = null;
     private Double[] vmin = null;
     private Double[] vavg = null;
@@ -25,6 +27,8 @@ public class Module {
         this.id = id;
         numfields = numvoltsens + numtempsens + (current ? 1:0) + CONST_NUMVSTACKSOC;
         numfaults = CONST_NUMFAULTS+(current ? 1:0)*CONST_CURRENTFAULTS;
+        this.numvoltsens = numvoltsens;
+        this.numtempsens = numtempsens;
         data = new ArrayList[numfields];
         for(int i = 0; i < data.length; i++)
             data[i] = new ArrayList();
@@ -124,7 +128,10 @@ public class Module {
     }
 
     public int getNumVoltSens() {
-        return vmax.length;
+        return numvoltsens;
+    }
+    public int getNumTempSens() {
+        return numtempsens;
     }
 
     public int getNumRows(){
@@ -179,5 +186,9 @@ public class Module {
         stats[2] = getVAvg();
         stats[3] = getMaxDelta();
         return  stats;
+    }
+
+    public int getNumfields() {
+        return numfields;
     }
 }
