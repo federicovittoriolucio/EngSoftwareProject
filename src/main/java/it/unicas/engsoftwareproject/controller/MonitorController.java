@@ -157,6 +157,11 @@ public class MonitorController {
     @FXML
     protected void showGraphWindow(){
 
+        if(BMSMonitor.stagelist.size() > 2) {
+            BMSMonitor.stagelist.get(2).requestFocus();
+            return;
+        }
+
         Stage graph_stage = new Stage();
         BMSMonitor.stagelist.add(graph_stage);
         FXMLLoader fxmlLoader = new FXMLLoader(BMSMonitor.class.getResource("graph-view.fxml"));
