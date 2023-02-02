@@ -1,6 +1,8 @@
 package it.unicas.engsoftwareproject;
 
 
+import eu.hansolo.fx.charts.voronoi.Graph;
+import it.unicas.engsoftwareproject.controller.GraphController;
 import it.unicas.engsoftwareproject.controller.MonitorController;
 import javafx.application.Platform;
 
@@ -43,6 +45,8 @@ public class DataHandler {
         int row = m.getNumRows();
         m.addRow(splitline);
         Platform.runLater(() -> MonitorController.updateGraphics(m.getDataRow(row), m.getFaultsRow(row), m.getStats(), id_module));
+        if(BMSMonitor.stagelist.size() > 2)
+            Platform.runLater(() -> GraphController.updateSeries(id_module));
     }
 
     public void writeStatsCSV(int id_module) throws IOException {

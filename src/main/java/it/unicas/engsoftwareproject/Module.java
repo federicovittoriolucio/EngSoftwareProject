@@ -1,5 +1,7 @@
 package it.unicas.engsoftwareproject;
 
+import eu.hansolo.fx.charts.data.XYChartItem;
+
 import java.util.ArrayList;
 
 public class Module {
@@ -178,8 +180,6 @@ public class Module {
         return avg;
     }
 
-    public int getNumrows(){return numrows;}
-
     public Double[] getStats()
     {
         Double[] stats = new Double[4];
@@ -196,5 +196,18 @@ public class Module {
 
     public boolean getCurrentBool() {
         return current;
+    }
+
+    public XYChartItem[][] getLastData(int n){
+
+        if(n > numrows)
+            n = numrows;
+
+        XYChartItem[][] lastdata = new XYChartItem[numfields][n];
+        for(int i = 0; i < numfields; i++)
+            for(int j = 0; j < n ; j++)
+                lastdata[i][j] = new XYChartItem(j ,data[i].get(j + numrows - n));
+
+        return lastdata;
     }
 }

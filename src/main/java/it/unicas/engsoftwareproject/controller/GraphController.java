@@ -4,14 +4,12 @@ import eu.hansolo.fx.charts.*;
 import eu.hansolo.fx.charts.data.*;
 import eu.hansolo.fx.charts.series.XYSeries;
 import eu.hansolo.fx.charts.series.XYSeriesBuilder;
-import eu.hansolo.fx.charts.series.XYZSeriesBuilder;
+import eu.hansolo.medusa.tools.Data;
 import it.unicas.engsoftwareproject.DataHandler;
+import it.unicas.engsoftwareproject.Module;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
-import javafx.scene.chart.Chart;
-import javafx.scene.chart.ValueAxis;
-import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
@@ -20,11 +18,7 @@ import javafx.scene.layout.*;
 
 import javafx.scene.paint.Color;
 
-import java.time.Clock;
-import java.time.LocalDateTime;
-import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -33,13 +27,16 @@ public class GraphController {
 
     @FXML
     private TabPane graphtabpane;
-
+    final static private int CONST_POINTSNUM = 25;
     private Tab[] graphtabs;
     private HBox[] tabhbox;
     private ScrollPane[] scrollpane;
     private VBox[] menuvbox;
     private CheckBox[][] checkboxes;
     private GridPane[] gridpane;
+
+    //Graph stuff
+    static private ArrayList<XYSeries>[] series;
 
     @FXML
     public void initialize(){
@@ -53,6 +50,7 @@ public class GraphController {
         checkboxes = new CheckBox[module_number][];
         gridpane = new GridPane[module_number];
 
+        series = new ArrayList[module_number];
 
         for(int i = 0; i < module_number; i++) {
 
@@ -107,94 +105,150 @@ public class GraphController {
 
             HBox.setHgrow(gridpane[i], Priority.ALWAYS);
 
-            gridpane[i].add(createGraph(i), 0,0);
-            gridpane[i].add(createGraph(i), 1,0);
-            gridpane[i].add(createGraph(i), 0,1);
-            gridpane[i].add(createGraph(i), 1,1);
+            initSeries(i);
+            int num_charts = 3;
+            if(module.getCurrentBool())
+                num_charts = 4;
+
+            XYChart[] charts = new XYChart[num_charts];
+            charts = createGraphs(i);
+
+            gridpane[i].add(charts[0], 0,0);
+            gridpane[i].add(charts[1], 1,0);
+            gridpane[i].add(charts[2], 0,1);
+            if(num_charts == 4)
+                gridpane[i].add(charts[3], 1,1);
 
         }
-
 
         graphtabpane.getTabs().addAll(graphtabs);
 
     }
 
-    private XYChart createGraph(int module_id){
+    private Axis createXAxis(){
+        return AxisBuilder  .create(Orientation.HORIZONTAL, Position.BOTTOM)
+                            .type(AxisType.LINEAR)
+                            .minValue(0)
+                            .maxValue(CONST_POINTSNUM)
+                            .autoScale(true)
+                            .axisColor(Color.web("#85949B"))
+                            .tickLabelColor(Color.web("#85949B"))
+                            .tickMarkColor(Color.web("#85949B"))
+                            .tickMarksVisible(true)
+                            .build();
+    }
 
-        int pointsnum = 50;
-        int endvalue = DataHandler.getInstance().getSampletime() * pointsnum;
+    private Axis createYAxis(){
+        return AxisBuilder  .create(Orientation.VERTICAL, Position.LEFT)
+                            .type(AxisType.LINEAR)
+                            .minValue(0)
+                            .maxValue(100)
+                            .autoScale(true)
+                            .axisColor(Color.web("#85949B"))
+                            .tickLabelColor(Color.web("#85949B"))
+                            .tickMarkColor(Color.web("#85949B"))
+                            .tickMarksVisible(true)
+                            .build();
+    }
 
-        ArrayList<XYChartItem> points  = new ArrayList<>();
-        points.add(new XYChartItem(0, 0));
-        //for(int i = 0; i < 30; i++){
-        //    points.add(new TYChartItem(LocalDateTime.now().plusSeconds(i), i));
-        //}
+    private Grid createGrid(Axis x, Axis y){
+        return GridBuilder  .create(x, y)
+                            .gridLinePaint(Color.web("#384C57"))
+                            .minorHGridLinesVisible(false)
+                            .mediumHGridLinesVisible(false)
+                            .minorVGridLinesVisible(false)
+                            .mediumVGridLinesVisible(false)
+                            .gridLineDashes(4, 4)
+                            .build();
+    }
 
-        Axis xaxis;
-        Axis yaxis;
+    private XYChart[] createGraphs(int module_id) {
+        it.unicas.engsoftwareproject.Module module = DataHandler.getInstance().getModule(module_id);
+        int num_charts = 3;
+        if(module.getCurrentBool())
+            num_charts = 4;
 
-        XYSeries series = XYSeriesBuilder.create()
-                .chartType(ChartType.SMOOTH_LINE)
-                .fill(Color.web("#00AEF520"))
-                .stroke(Color.web("#00AEF5"))
-                .symbolFill(Color.web("#00AEF5"))
-                .symbolStroke(Color.web("#293C47"))
-                .symbolSize(10)
-                .strokeWidth(3)
-                .symbolsVisible(true)
-                .build();
+        Axis[] xaxis = new Axis[num_charts];
+        for(int i = 0; i < num_charts; i++)
+            xaxis[i] = createXAxis();
 
-        xaxis = AxisBuilder.create(Orientation.HORIZONTAL, Position.BOTTOM)
-                .type(AxisType.LINEAR)
-                .minValue(0)
-                .maxValue(endvalue)
-                .autoScale(true)
-                .build();
+        Axis[] yaxis = new Axis[num_charts];
+        for(int i = 0; i < num_charts; i++)
+            yaxis[i] = createYAxis();
 
-        xaxis.setVisible(false);
+        Grid[] grids = new Grid[num_charts];
+        for(int i = 0; i < num_charts; i++)
+            grids[i] = createGrid(xaxis[i], yaxis[i]);
 
-        yaxis = AxisBuilder.create(Orientation.VERTICAL, Position.LEFT)
-                .type(AxisType.LINEAR)
-                .minValue(0)
-                .maxValue(11)
-                .autoScale(true)
-                .axisColor(Color.web("#85949B"))
-                .tickLabelColor(Color.web("#85949B"))
-                .tickMarkColor(Color.web("#85949B"))
-                .tickMarksVisible(true)
-                .build();
+        int indexvoltsens = module.getNumVoltSens() + 1;
+        int indextempsens = indexvoltsens + module.getNumTempSens();
 
-        Grid grid = GridBuilder.create(xaxis, yaxis)
-                .gridLinePaint(Color.web("#384C57"))
-                .minorHGridLinesVisible(false)
-                .mediumHGridLinesVisible(false)
-                .minorVGridLinesVisible(false)
-                .mediumVGridLinesVisible(false)
-                .gridLineDashes(4, 4)
-                .build();
+        XYPane voltpane = new XYPane(series[module_id].subList(0, indexvoltsens));
+        XYPane temppane = new XYPane(series[module_id].subList(indexvoltsens, indextempsens));
+        XYPane socpane  = new XYPane(series[module_id].get(indextempsens));
+        XYPane currpane;
 
-        XYPane lineChartPane = new XYPane(series);
+        XYChart[] charts = new XYChart[num_charts];
+        charts[0] = new XYChart(voltpane, grids[0], yaxis[0], xaxis[0]);
+        charts[1] = new XYChart(temppane, grids[1], yaxis[1], xaxis[1]);
+        charts[2] = new XYChart(socpane, grids[2], yaxis[2], xaxis[2]);
 
-        XYChart lineChart = new XYChart<>(lineChartPane, grid, yaxis, xaxis);
+        if(num_charts == 4) {
+            currpane = new XYPane(series[module_id].get(indextempsens + 1));
+            charts[3] = new XYChart(currpane, grids[3], yaxis[3], xaxis[3]);
+        }
 
+        return charts;
+        /*
         ScheduledExecutorService scheduledExecutorService;
         scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
 
         scheduledExecutorService.scheduleAtFixedRate(() -> {
 
             Platform.runLater(() -> {
-                points.add(new XYChartItem(points.get(points.size()-1).getX() + DataHandler.getInstance().getSampletime(),
-                                            Math.random()*10));
-                if(points.size() > pointsnum) {
-                    points.remove(0);
-                    xaxis.setMinValue(points.get(0).getX());
-                    xaxis.setMaxValue(points.get(points.size()-1).getX());
+
+                if(points.size() <= CONST_POINTSNUM)
+                    points.add(new XYChartItem(points.size(), Math.random()*10));
+                else{
+                    for(int i = 0; i < points.size() - 1; i++)
+                        points.get(i).setY(points.get(i+1).getY());
+                    points.get(points.size() - 1).setY(Math.random()*10);
                 }
                 series.setItems(points);
-            });
-        }, 0, DataHandler.getInstance().getSampletime(), TimeUnit.MILLISECONDS);
 
-        return lineChart;
+            });
+        }, 1000, DataHandler.getInstance().getSampletime(), TimeUnit.MILLISECONDS);
+
+        return linechart;
+        */
     }
 
+    private void initSeries(int module_id){
+
+        series[module_id] = new ArrayList<>();
+        for(int i = 0; i < DataHandler.getInstance().getModule(module_id).getNumfields(); i++){
+
+            series[module_id].add(
+                    XYSeriesBuilder .create()
+                                    .chartType(ChartType.LINE)
+                                    .fill(Color.web("#00AEF520"))
+                                    .stroke(Color.web("#00AEF5"))
+                                    .symbolFill(Color.web("#00AEF5"))
+                                    .symbolStroke(Color.web("#293C47"))
+                                    .symbolSize(10)
+                                    .strokeWidth(1)
+                                    .symbolsVisible(true)
+                                    .build()
+            );
+        }
+    }
+
+    static public void updateSeries(int module_id){
+
+        XYChartItem[][] data = DataHandler.getInstance().getModule(module_id).getLastData(CONST_POINTSNUM);
+
+        for(int i = 0; i < data.length; i++)
+            series[module_id].get(i).setItems(data[i]);
+
+    }
 }
