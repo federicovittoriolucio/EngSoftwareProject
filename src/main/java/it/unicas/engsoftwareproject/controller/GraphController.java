@@ -150,6 +150,7 @@ public class GraphController {
             if(num_charts == 4)
                 gridpane[i].add(charts[3], 1,1);
 
+            updateSeries(i);
         }
 
         graphtabpane.getTabs().addAll(graphtabs);
@@ -286,6 +287,7 @@ public class GraphController {
     private void updateVisibility(int module_id) {
         for(int i = 0; i < checkboxes[module_id].length; i++)
             series[module_id].get(i).setVisible(checkboxes[module_id][i].isSelected());
+        updateSeries(module_id);
     }
 
     static public void updateSeries(int module_id){
