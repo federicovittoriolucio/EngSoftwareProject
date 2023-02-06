@@ -313,11 +313,14 @@ public class GraphController {
 
         for(XYSeries s : series[module_id].subList(begin, end))
             if(s.isVisible()) {
-                if (max < s.getMaxY())
+                if (max < s.getMaxY()) {
                     max = s.getMaxY();
-                if (min > s.getMinY())
+                    flag = true;
+                }
+                if (min > s.getMinY()) {
                     min = s.getMinY();
-                flag = true;
+                    flag = true;
+                }
             }
 
         if(flag) {
