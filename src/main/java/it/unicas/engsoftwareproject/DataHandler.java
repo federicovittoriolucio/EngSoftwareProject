@@ -98,17 +98,14 @@ public class DataHandler {
     public int getActiveModules() {return activemodules;}
 
     public DataSource[] genReaders(String[] absolutepaths, int sampletime) throws FileNotFoundException {
-        if(absolutepaths[0].contains(".csv")) {
-            CSVReader[] readers = new CSVReader[absolutepaths.length];
 
-            for (int i = 0; i < readers.length; i++)
-                readers[i] = new CSVReader(absolutepaths[i], sampletime);
+        CSVReader[] readers = new CSVReader[absolutepaths.length];
 
-            this.sampletime = sampletime;
+        for (int i = 0; i < readers.length; i++)
+            readers[i] = new CSVReader(absolutepaths[i], sampletime);
 
-            return readers;
-        }
-        return null;
+        this.sampletime = sampletime;
+        return readers;
     }
 
     public void resetActivemodules() {

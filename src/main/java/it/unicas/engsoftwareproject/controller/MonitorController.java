@@ -7,6 +7,8 @@ import it.unicas.engsoftwareproject.BMSMonitor;
 import it.unicas.engsoftwareproject.CSVReader;
 import it.unicas.engsoftwareproject.DataHandler;
 import it.unicas.engsoftwareproject.DataSource;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -17,6 +19,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 
@@ -190,7 +193,13 @@ public class MonitorController {
         for(int i = 0; i < readers.length; i++)
             readers[i].start();
 
-
+        BMSMonitor.stagelist.get(1).setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent t) {
+                Platform.exit();
+                System.exit(0);
+            }
+        });
     }
 
     static public void setSettings(String[] paths, int T){
@@ -343,10 +352,6 @@ public class MonitorController {
             for(Node child : indicators_vbox[i].getChildren()) {
                 VBox.setVgrow(child, Priority.ALWAYS);
             }
-
-            //for(Node child : window_hbox[i].getChildren()) {
-            //    HBox.setHgrow(child, Priority.ALWAYS);
-            //}
 
         }
 

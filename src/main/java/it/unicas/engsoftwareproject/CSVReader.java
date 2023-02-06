@@ -47,20 +47,6 @@ public class CSVReader implements DataSource {
 
         System.out.println("");
 
-        /*while(sc.hasNextLine())
-        {
-            String line = sc.nextLine();
-            String[] rowline = line.split(",");
-            list.add(rowline);
-        }
-
-        values = new Double[numrows][numcols];
-        for(int i = 0; i < numrows; i++)
-        {
-            for (int j = 0; j < numcols; j++)
-                values[i][j] = Double.parseDouble(list.get(i)[j]);
-        }*/
-
         numvoltsens = 0;
         numtempsens = 0;
         current = false;
@@ -90,22 +76,6 @@ public class CSVReader implements DataSource {
 
         sc.close();
     }
-
-    /*public void printCSV()
-    {
-        for(String item : fields)
-        {
-            System.out.print(item + " ");
-        }
-        System.out.println("");
-        for(int j = 0; j < numrows; j++)
-        {
-            for (int i = 0; i < numcols; i++)
-                System.out.print(list.get(j)[i] + " ");
-
-            System.out.println("");
-        }
-    }*/
 
     public int getNumVoltSens()
     {

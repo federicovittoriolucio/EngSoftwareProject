@@ -30,6 +30,12 @@ public class MenuController {
             showAlert("Alert","You can't use the specified sample time. Insert a valid sample time.");
             return;
         }
+        for(String item : listview.getItems().toArray(new String[0]))
+            if(!item.endsWith(".csv")) {
+                showAlert("Alert","One of the selected files is not valid.");
+                return;
+            }
+
 
         MonitorController.setSettings(listview.getItems().toArray(new String[0]), Integer.parseInt(timefield.getText()));
 
