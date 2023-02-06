@@ -323,6 +323,7 @@ public class GraphController {
                 }
             }
 
+
         if(flag) {
             yaxis[module_id][graph_id].setMaxValue(max + 0.1 * max);
             yaxis[module_id][graph_id].setMinValue(min - 0.1 * Math.abs(min));
