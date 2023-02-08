@@ -7,20 +7,22 @@ import it.unicas.engsoftwareproject.BMSMonitor;
 import it.unicas.engsoftwareproject.CSVReader;
 import it.unicas.engsoftwareproject.DataHandler;
 import it.unicas.engsoftwareproject.DataSource;
+
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-
 import java.io.IOException;
 
 public class MonitorController {
@@ -40,23 +42,21 @@ public class MonitorController {
     static private Gauge[] curr_gauges;
     static private Gauge[] vstack_gauges;
     static private Gauge[] soc_gauges;
-    /*static private Gauge[] vmax_gauges;
-    static private Gauge[] vmin_gauges;
-    static private Gauge[] vavg_gauges;
-    static private Gauge[] vdelta_gauges;*/
-    static private Label[] vmax_labels;
-    static private Label[] vmin_labels;
-    static private Label[] vavg_labels;
-    static private Label[] vdelta_labels;
+    static private TextField[] vmax_textfield;
+    static private TextField[] vmin_textfield;
+    static private TextField[] vavg_textfield;
+    static private TextField[] vdelta_textfield;
 
-    static DataSource[] readers = null;
+    static DataSource[] sources = null;
     static private int sampletime;
     static private String[] absolutepaths;
 
     public static void updateGraphics(Double[] data, String[] faults, Double[] stats, int id_module) {
 
-        int numvolt = readers[id_module].getNumVoltSens();
-        int numtemp = readers[id_module].getNumTempSens();
+        it.unicas.engsoftwareproject.Module m = DataHandler.getInstance().getModule(id_module);
+
+        int numvolt = m.getNumVoltSens();
+        int numtemp = m.getNumTempSens();
         int vstackindex = numvolt;
         int socindex = numvolt+numtemp+1;
         int currindex = numvolt+numtemp+2;
@@ -70,13 +70,13 @@ public class MonitorController {
             temp_gauges[id_module][i].valueProperty().set(data[i+numvolt+1]);
 
         soc_gauges[id_module].valueProperty().set(data[socindex]);
-        if(readers[id_module].getCurrentBool())
+        if(m.getCurrentBool())
             curr_gauges[id_module].valueProperty().set(data[currindex]);
 
-        vmax_labels[id_module].setText("Max Voltage: " + String.format("%.3f", stats[0]));
-        vmin_labels[id_module].setText("Min Voltage: " + String.format("%.3f", stats[1]));
-        vavg_labels[id_module].setText("Avg Voltage: " + String.format("%.3f", stats[2]));
-        vdelta_labels[id_module].setText("Delta Voltage: " + String.format("%.3f", stats[3]));
+        vmax_textfield[id_module].setText(String.format("%.3f", stats[0]));
+        vmin_textfield[id_module].setText(String.format("%.3f", stats[1]));
+        vavg_textfield[id_module].setText(String.format("%.3f", stats[2]));
+        vdelta_textfield[id_module].setText(String.format("%.3f", stats[3]));
 
         if (faults != null) {
 
@@ -84,38 +84,32 @@ public class MonitorController {
                 if (faults[0].charAt(i) == '1') {
                     volt_gauges[id_module][i].setLedColor(Color.RED);
                     volt_gauges[id_module][i].setLedOn(true);
-                    //volt_gauges[id_module][i].barColorProperty().setValue(Color.LIGHTGREEN);
                 } else if (faults[1].charAt(i) == '1') {
                     volt_gauges[id_module][i].setLedColor(Color.YELLOW);
                     volt_gauges[id_module][i].setLedOn(true);
-                    //volt_gauges[id_module][i].barColorProperty().setValue(Color.DARKGREEN);
                 } else {
                     volt_gauges[id_module][i].setLedColor(Color.BLACK);
                     volt_gauges[id_module][i].setLedOn(false);
-                    //volt_gauges[id_module][i].barColorProperty().setValue(Color.GREEN);
                 }
 
             for (int i = 0; i < numtemp; i++)
                 if (faults[2].charAt(i) == '1') {
                     temp_gauges[id_module][i].setLedColor(Color.RED);
                     temp_gauges[id_module][i].setLedOn(true);
-                    //temp_gauges[id_module][i].barColorProperty().setValue(Color.PINK);
                 } else if (faults[3].charAt(i) == '1') {
                     temp_gauges[id_module][i].setLedColor(Color.YELLOW);
                     temp_gauges[id_module][i].setLedOn(true);
-                    //temp_gauges[id_module][i].barColorProperty().setValue(Color.LIGHTBLUE);
                 } else {
                     temp_gauges[id_module][i].setLedColor(Color.BLACK);
                     temp_gauges[id_module][i].setLedOn(false);
-                    //temp_gauges[id_module][i].barColorProperty().setValue(Color.RED);
                 }
 
-            if (readers[id_module].getCurrentBool() == true)
+            if (m.getCurrentBool() == true)
                 if (faults[4].compareTo("1") == 0) {
-                    curr_gauges[id_module].setLedColor(Color.RED);
+                    curr_gauges[id_module].setLedColor(Color.MAGENTA);
                     curr_gauges[id_module].setLedOn(true);
                 } else if (faults[5].compareTo("1") == 0) {
-                    curr_gauges[id_module].setLedColor(Color.YELLOW);
+                    curr_gauges[id_module].setLedColor(Color.ORANGE);
                     curr_gauges[id_module].setLedOn(true);
                 } else {
                     curr_gauges[id_module].setLedColor(Color.BLACK);
@@ -128,8 +122,8 @@ public class MonitorController {
     @FXML
     protected void backToMenu() throws IOException {
 
-        for (int i = 0; i < readers.length; i++){
-            readers[i].stop();
+        for (int i = 0; i < sources.length; i++){
+            sources[i].stop();
             DataHandler.getInstance().writeDataCSV(i);
             DataHandler.getInstance().writeStatsCSV(i);
         }
@@ -147,14 +141,14 @@ public class MonitorController {
     protected void pauseModule()
     {
         int id_module = Integer.parseInt(tabpane.getSelectionModel().getSelectedItem().getId());
-        readers[id_module].pause();
+        sources[id_module].pause();
     }
 
     @FXML
     protected void resumeModule()
     {
         int id_module = Integer.parseInt(tabpane.getSelectionModel().getSelectedItem().getId());
-        readers[id_module].resume();
+        sources[id_module].resume();
     }
 
     @FXML
@@ -174,24 +168,26 @@ public class MonitorController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        // To use bootstrap:
+
         graph_scene.getStylesheets().add(BMSMonitor.class.getResource("CustomStylesheet.css").toExternalForm());
         graph_scene.getStylesheets().add("org/kordamp/bootstrapfx/bootstrapfx.css");
         graph_stage.setScene(graph_scene);
         graph_stage.setTitle("Graphs");
         graph_stage.sizeToScene();
+        graph_stage.setMinHeight(720);
+        graph_stage.setMinWidth(1280);
         graph_stage.show();
     }
 
     @FXML
     public void initialize() throws IOException {
 
-        readers = DataHandler.getInstance().genReaders(absolutepaths, sampletime);
+        sources = DataHandler.getInstance().genReaders(absolutepaths, sampletime);
 
         initGraphics();
 
-        for(int i = 0; i < readers.length; i++)
-            readers[i].start();
+        for(int i = 0; i < sources.length; i++)
+            sources[i].start();
 
         BMSMonitor.stagelist.get(1).setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
@@ -209,25 +205,28 @@ public class MonitorController {
 
     private void initGraphics()
     {
-        window_hbox = new HBox[readers.length];
-        indicators_vbox = new VBox[readers.length];
-        stats_vbox = new VBox[readers.length];
-        volt_hbox = new HBox[readers.length];
-        temp_hbox = new HBox[readers.length];
-        curr_hbox = new HBox[readers.length];
-        container_hbox = new HBox[readers.length];
-        volt_gauges = new Gauge[readers.length][];
-        temp_gauges = new Gauge[readers.length][];
-        curr_gauges = new Gauge[readers.length];
-        vstack_gauges = new Gauge[readers.length];
-        soc_gauges = new Gauge[readers.length];
-        vmax_labels = new Label[readers.length];
-        vmin_labels = new Label[readers.length];
-        vavg_labels = new Label[readers.length];
-        vdelta_labels = new Label[readers.length];
+        window_hbox = new HBox[sources.length];
+        indicators_vbox = new VBox[sources.length];
+        stats_vbox = new VBox[sources.length];
+        volt_hbox = new HBox[sources.length];
+        temp_hbox = new HBox[sources.length];
+        curr_hbox = new HBox[sources.length];
+        container_hbox = new HBox[sources.length];
+        volt_gauges = new Gauge[sources.length][];
+        temp_gauges = new Gauge[sources.length][];
+        curr_gauges = new Gauge[sources.length];
+        vstack_gauges = new Gauge[sources.length];
+        soc_gauges = new Gauge[sources.length];
+        vmax_textfield = new TextField[sources.length];
+        vmin_textfield = new TextField[sources.length];
+        vavg_textfield = new TextField[sources.length];
+        vdelta_textfield = new TextField[sources.length];
 
 
-        for(int i = 0; i < readers.length; i++) {
+
+        for(int i = 0; i < sources.length; i++) {
+            it.unicas.engsoftwareproject.Module m = DataHandler.getInstance().getModule(i);
+
             Tab tab = new Tab("Module" + (i+1) );
             tab.setId(Integer.toString(i));
 
@@ -238,8 +237,8 @@ public class MonitorController {
             temp_hbox[i] = new HBox();
             curr_hbox[i] = new HBox();
             container_hbox[i] = new HBox();
-            volt_gauges[i] = new Gauge[readers[i].getNumVoltSens()];
-            temp_gauges[i] = new Gauge[readers[i].getNumTempSens()];
+            volt_gauges[i] = new Gauge[m.getNumVoltSens()];
+            temp_gauges[i] = new Gauge[m.getNumTempSens()];
 
             tab.setContent(window_hbox[i]);
             tabpane.getTabs().add(tab);
@@ -247,15 +246,19 @@ public class MonitorController {
             window_hbox[i].getStyleClass().add("window-hbox");
             volt_hbox[i].getStyleClass().add("gauge-hbox");
             temp_hbox[i].getStyleClass().add("gauge-hbox");
-            stats_vbox[i].getStyleClass().add("gauge-hbox");
+            stats_vbox[i].getStyleClass().add("stats-vbox");
             curr_hbox[i].getStyleClass().add("gauge-hbox");
 
             indicators_vbox[i].setSpacing(20);
             container_hbox[i].setSpacing(20);
 
-            HBox.setHgrow(window_hbox[i], Priority.ALWAYS);
+            window_hbox[i].setAlignment(Pos.CENTER);
 
-            if(readers[i].getCurrentBool()) {
+            HBox.setHgrow(window_hbox[i], Priority.ALWAYS);
+            HBox.setHgrow(curr_hbox[i], Priority.ALWAYS);
+
+
+            if(m.getCurrentBool()) {
                 curr_gauges[i] = GaugeBuilder.create()
                         .maxValue(100)
                         .barColor(Color.BLUE)
@@ -273,7 +276,7 @@ public class MonitorController {
             }
 
             vstack_gauges[i] = GaugeBuilder.create()
-                    .maxValue(readers[i].getNumVoltSens()*5)
+                    .maxValue(m.getNumVoltSens()*5)
                     .barColor(Color.GREEN)
                     .skinType(Gauge.SkinType.LINEAR)
                     .title("Vstack (V)")
@@ -287,19 +290,16 @@ public class MonitorController {
 
             soc_gauges[i] = GaugeBuilder.create()
                     .maxValue(100)
-                    .barColor(Color.LIGHTGRAY)
+                    .barColor(Color.LIMEGREEN)
                     .skinType(Gauge.SkinType.BATTERY)
                     .title("SoC (%)")
                     .decimals(1)
-                    .tickMarkColor(Color.LIGHTGRAY)
                     .titleColor(Color.WHITE)
                     .valueColor(Color.WHITE)
                     .tickLabelColor(Color.WHITE)
                     .build();
 
-            //stats_hbox[i].getChildren().addAll(vstack_gauges[i]);
-
-            for(int j = 0; j < readers[i].getNumVoltSens(); j++) {
+            for(int j = 0; j < m.getNumVoltSens(); j++) {
                 volt_gauges[i][j] = GaugeBuilder.create()
                         .maxValue(5)
                         .barColor(Color.GREEN)
@@ -316,7 +316,7 @@ public class MonitorController {
 
                 volt_hbox[i].getChildren().add(volt_gauges[i][j]);
             }
-            for(int j = 0; j < readers[i].getNumTempSens(); j++) {
+            for(int j = 0; j < m.getNumTempSens(); j++) {
                 temp_gauges[i][j] = GaugeBuilder.create()
                         .maxValue(70)
                         .barColor(Color.RED)
@@ -334,17 +334,32 @@ public class MonitorController {
                 temp_hbox[i].getChildren().add(temp_gauges[i][j]);
             }
 
-            vmax_labels[i] = new Label();
-            vmin_labels[i] = new Label();
-            vavg_labels[i] = new Label();
-            vdelta_labels[i] = new Label();
+            Label vmax_label = new Label("Max Voltage");
+            Label vmin_label = new Label("Min Voltage");
+            Label vavg_label = new Label("Avg Voltage");
+            Label vdelta_label = new Label("Delta Voltage");
 
-            vmax_labels[i].setTextFill(Color.WHITE);
-            vmin_labels[i].setTextFill(Color.WHITE);
-            vavg_labels[i].setTextFill(Color.WHITE);
-            vdelta_labels[i].setTextFill(Color.WHITE);
+            vmax_label.setTextFill(Color.WHITE);
+            vmin_label.setTextFill(Color.WHITE);
+            vavg_label.setTextFill(Color.WHITE);
+            vdelta_label.setTextFill(Color.WHITE);
 
-            stats_vbox[i].getChildren().addAll(vmax_labels[i], vmin_labels[i], vavg_labels[i], vdelta_labels[i], soc_gauges[i]);
+            vmax_textfield[i] = new TextField();
+            vmin_textfield[i] = new TextField();
+            vavg_textfield[i] = new TextField();
+            vdelta_textfield[i] = new TextField();
+
+            vmax_textfield[i].setEditable(false);
+            vmin_textfield[i].setEditable(false);
+            vavg_textfield[i].setEditable(false);
+            vdelta_textfield[i].setEditable(false);
+
+            stats_vbox[i].getChildren().addAll( soc_gauges[i],
+                                                new VBox(vmax_label, vmax_textfield[i]),
+                                                new VBox(vmin_label, vmin_textfield[i]),
+                                                new VBox(vavg_label, vavg_textfield[i]),
+                                                new VBox(vdelta_label, vdelta_textfield[i]));
+
             container_hbox[i].getChildren().addAll(temp_hbox[i], curr_hbox[i]);
             indicators_vbox[i].getChildren().addAll(volt_hbox[i], container_hbox[i]);
             window_hbox[i].getChildren().addAll(indicators_vbox[i],stats_vbox[i]);

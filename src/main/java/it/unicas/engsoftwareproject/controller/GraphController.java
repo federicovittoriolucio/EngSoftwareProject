@@ -4,12 +4,10 @@ import eu.hansolo.fx.charts.*;
 import eu.hansolo.fx.charts.data.*;
 import eu.hansolo.fx.charts.series.XYSeries;
 import eu.hansolo.fx.charts.series.XYSeriesBuilder;
-import eu.hansolo.medusa.tools.Data;
+
 import it.unicas.engsoftwareproject.BMSMonitor;
 import it.unicas.engsoftwareproject.DataHandler;
-import it.unicas.engsoftwareproject.Module;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
+
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
@@ -18,14 +16,9 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.*;
-
 import javafx.scene.paint.Color;
 import javafx.stage.WindowEvent;
-
 import java.util.ArrayList;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class GraphController {
 
@@ -56,16 +49,15 @@ public class GraphController {
 
         int module_number = DataHandler.getInstance().getActiveModules();
 
-        colorarray = new String[]
-                {"#276880",
-                "#A60F0F",
-                "#0DE545",
-                "#FAE001",
-                "#6F0BF3",
-                "#F87706",
-                "#0AF6F5",
-                "#ACFA06",
-                "#FFFFFF"};
+        colorarray = new String[] { "#ff4545", // light red
+                                    "#607dfc", // light blue
+                                    "#fcf960", // light yellow
+                                    "#7afc60", // light green
+                                    "#fc8f60", // sorbet orange
+                                    "#60fcfc", // cyan
+                                    "#cb60fc", // lilac
+                                    "#ed05a7", // pink
+                                    "#FFFFFF"};// white
 
         graphtabs = new Tab[module_number];
         tabhbox = new HBox[module_number];
@@ -141,7 +133,7 @@ public class GraphController {
             if(module.getCurrentBool())
                 num_charts = 4;
 
-            XYChart[] charts = new XYChart[num_charts];
+            XYChart[] charts;
             charts = createGraphs(i);
 
             gridpane[i].add(charts[0], 0,0);
@@ -158,7 +150,7 @@ public class GraphController {
     }
 
     private Axis createXAxis(){
-        return AxisBuilder  .create(Orientation.HORIZONTAL, Position.BOTTOM)
+        return AxisBuilder  .create(Orientation.HORIZONTAL, Position.TOP)
                             .type(AxisType.LINEAR)
                             .minValue(0)
                             .maxValue(CONST_POINTSNUM)
@@ -259,7 +251,7 @@ public class GraphController {
                                     .stroke(Color.web(colorarray[8]))
                                     .symbolFill(Color.web(colorarray[8]))
                                     .symbolStroke(Color.web(colorarray[8]))
-                                    .symbolSize(10)
+                                    .symbolSize(5)
                                     .strokeWidth(1)
                                     .symbolsVisible(true)
                                     .build()
@@ -270,17 +262,39 @@ public class GraphController {
         }
 
         for(int i = 0; i < indexvoltsens; i++) {
-            series[module_id].get(i).setStroke(Color.web(colorarray[i]));
-            series[module_id].get(i).setSymbolFill(Color.web(colorarray[i]));
-            series[module_id].get(i).setSymbolStroke(Color.web(colorarray[i]));
-            checkboxes[module_id][i].setStyle("-fx-text-fill: " + colorarray[i]);
+
+            String color = "#FFFFFF";
+            if(i < colorarray.length)
+                color = colorarray[i];
+
+            series[module_id].get(i).setStroke(Color.web(color));
+            series[module_id].get(i).setSymbolFill(Color.web(color));
+            series[module_id].get(i).setSymbolStroke(Color.web(color));
+            checkboxes[module_id][i].setStyle("-fx-text-fill: " + color);
         }
 
         for(int i = indexvoltsens; i < indextempsens; i++) {
-            series[module_id].get(i).setStroke(Color.web(colorarray[i-indexvoltsens]));
-            series[module_id].get(i).setSymbolFill(Color.web(colorarray[i-indexvoltsens]));
-            series[module_id].get(i).setSymbolStroke(Color.web(colorarray[i-indexvoltsens]));
-            checkboxes[module_id][i].setStyle("-fx-text-fill: " + colorarray[i-indexvoltsens]);
+
+            String color = "#FFFFFF";
+            if(i-indexvoltsens < colorarray.length)
+                color = colorarray[i-indexvoltsens];
+
+            series[module_id].get(i).setStroke(Color.web(color));
+            series[module_id].get(i).setSymbolFill(Color.web(color));
+            series[module_id].get(i).setSymbolStroke(Color.web(color));
+            checkboxes[module_id][i].setStyle("-fx-text-fill: " + color);
+        }
+
+        series[module_id].get(indextempsens).setChartType(ChartType.AREA);
+        series[module_id].get(indextempsens).setFill(Color.web("#FFFFFF", 0.3));
+        series[module_id].get(indextempsens).setStrokeWidth(4);
+        series[module_id].get(indextempsens).setSymbolSize(12);
+
+        if(indextempsens+1 < series[module_id].size()) {
+            series[module_id].get(indextempsens + 1).setChartType(ChartType.AREA);
+            series[module_id].get(indextempsens + 1).setFill(Color.web("#FFFFFF", 0.3));
+            series[module_id].get(indextempsens + 1).setStrokeWidth(4);
+            series[module_id].get(indextempsens + 1).setSymbolSize(12);
         }
     }
 

@@ -74,3 +74,17 @@
 .button:hover {
     -fx-background-color: #8c8c8c;
 }
+
+.text-field {
+    -fx-background-color: transparent;
+    -fx-border-color: white;
+    -fx-text-fill: white;
+    -fx-border-radius: 3px;
+}
+
+.stats-vbox {
+    -fx-background-color: #333333;
+    -fx-background-radius: 5px;
+    -fx-padding: 20px 20px 20px 20px;
+    -fx-spacing: 20px;
+}

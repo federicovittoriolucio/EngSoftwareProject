@@ -22,7 +22,6 @@ public class CSVReader implements DataSource {
     private boolean current;
     private boolean faults;
     private String path;
-    private int samplenum;
     private Timer timer;
     private Scanner reader;
 
@@ -37,7 +36,6 @@ public class CSVReader implements DataSource {
         path = pathname;
         sampletime = T;
         System.out.println(path);
-        samplenum = 0;
         sc.useDelimiter(",");   //sets the delimiter pattern
         fields = new ArrayList<String>();
         String linefield = sc.nextLine();
@@ -77,51 +75,26 @@ public class CSVReader implements DataSource {
         sc.close();
     }
 
-    public int getNumVoltSens()
-    {
-        return numvoltsens;
-    }
-
-    public int getNumTempSens()
-    {
-        return numtempsens;
-    }
-
-    public boolean getCurrentBool()
-    {
-        return current;
-    }
-
-    public boolean getFaultsBool()
-    {
-        return faults;
-    }
-
     public void start() throws FileNotFoundException
     {
         reader = new Scanner(new File(path));
         reader.nextLine();
         state = State.RUNNING;
         timer = new Timer();
-        // Viene eseguito il task, runnando update() ogni sampletime millisecondi
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                update(reader);
+                update();
             }
         }, 0, sampletime);
-        // Status = running
-
     }
 
-    public void update(Scanner reader)
+    public void update()
     {
         if(reader.hasNextLine()) {
             String line = reader.nextLine();
             String[] rowline = line.split(",");
             DataHandler.getInstance().updateData(rowline,id);
-            samplenum++;
-
         }
         else {
             state = State.END;
@@ -149,7 +122,7 @@ public class CSVReader implements DataSource {
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    update(reader);
+                    update();
                 }
             }, 0, sampletime);
         }
@@ -160,7 +133,6 @@ public class CSVReader implements DataSource {
         timer.cancel();
         timer.purge();
         reader.close();
-        // Status = stopped
     }
     static public void resetCounter()
     {

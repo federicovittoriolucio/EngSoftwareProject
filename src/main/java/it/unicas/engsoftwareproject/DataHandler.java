@@ -1,11 +1,9 @@
 package it.unicas.engsoftwareproject;
 
-
-import eu.hansolo.fx.charts.voronoi.Graph;
 import it.unicas.engsoftwareproject.controller.GraphController;
 import it.unicas.engsoftwareproject.controller.MonitorController;
-import javafx.application.Platform;
 
+import javafx.application.Platform;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -114,9 +112,5 @@ public class DataHandler {
 
     public Module getModule(int id_module){
         return modules[id_module];
-    }
-
-    public int getSampletime(){
-        return sampletime;
     }
 }

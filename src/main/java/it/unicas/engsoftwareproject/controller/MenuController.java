@@ -20,7 +20,7 @@ public class MenuController {
     @FXML
     private TextField timefield;
     @FXML
-    protected void startSimulation(ActionEvent event){
+    protected void startSimulation(){
 
         if (listview.getItems().size() == 0) {
             showAlert("Alert","You haven't provided any data source.");
@@ -55,6 +55,8 @@ public class MenuController {
         monitor_stage.setScene(monitor_scene);
         monitor_stage.setTitle("BMS Monitor");
         monitor_stage.sizeToScene();
+        monitor_stage.setMinHeight(720);
+        monitor_stage.setMinWidth(1280);
         monitor_stage.show();
 
 

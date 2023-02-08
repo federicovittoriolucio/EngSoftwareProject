@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class BMSMonitor extends Application {
     public static ArrayList<Stage> stagelist;
     @Override
-    public void start(Stage stage) throws IOException, InterruptedException {
+    public void start(Stage stage) throws IOException {
 
         stagelist = new ArrayList<>();
         stagelist.add(stage);
@@ -21,7 +21,7 @@ public class BMSMonitor extends Application {
         scene.getStylesheets().add("org/kordamp/bootstrapfx/bootstrapfx.css");
         scene.getStylesheets().getClass().getResource("CustomStylesheet.css");
         stage.setScene(scene);
-        stage.setTitle("Titolo");
+        stage.setTitle("Main Menu");
         stage.sizeToScene();
         stage.setResizable(false);
         stage.show();

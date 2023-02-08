@@ -62,18 +62,12 @@ public class Module {
 
     public void addRow(String[] row)
     {
-        for(int i = 0; i < numfields; i++) {
+        for(int i = 0; i < numfields; i++)
             data[i].add(Double.parseDouble(row[i]));
-            //System.out.print(data[i].get(numrows) + " ");
-        }
 
         if(faultsdata != null)
-            for(int i = 0; i < numfaults; i++) {
+            for(int i = 0; i < numfaults; i++)
                 faultsdata[i].add(row[i + numfields]);
-                //System.out.print(faultsdata[i].get(numrows) + " ");
-            }
-
-        //System.out.println("");
 
         updateMax();
         updateMin();
