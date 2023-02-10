@@ -37,6 +37,8 @@ public class MonitorController {
     private HBox[] temp_hbox;
     private HBox[] curr_hbox;
     private HBox[] container_hbox;
+
+    static private Tab[] tabs;
     static private Gauge[][] volt_gauges;
     static private Gauge[][] temp_gauges;
     static private Gauge[] curr_gauges;
@@ -80,13 +82,17 @@ public class MonitorController {
 
         if (faults != null) {
 
+            boolean flag = false;
+
             for (int i = 0; i < numvolt; i++)
                 if (faults[0].charAt(i) == '1') {
                     volt_gauges[id_module][i].setLedColor(Color.RED);
                     volt_gauges[id_module][i].setLedOn(true);
+                    flag = true;
                 } else if (faults[1].charAt(i) == '1') {
                     volt_gauges[id_module][i].setLedColor(Color.YELLOW);
                     volt_gauges[id_module][i].setLedOn(true);
+                    flag = true;
                 } else {
                     volt_gauges[id_module][i].setLedColor(Color.BLACK);
                     volt_gauges[id_module][i].setLedOn(false);
@@ -96,9 +102,11 @@ public class MonitorController {
                 if (faults[2].charAt(i) == '1') {
                     temp_gauges[id_module][i].setLedColor(Color.RED);
                     temp_gauges[id_module][i].setLedOn(true);
+                    flag = true;
                 } else if (faults[3].charAt(i) == '1') {
                     temp_gauges[id_module][i].setLedColor(Color.YELLOW);
                     temp_gauges[id_module][i].setLedOn(true);
+                    flag = true;
                 } else {
                     temp_gauges[id_module][i].setLedColor(Color.BLACK);
                     temp_gauges[id_module][i].setLedOn(false);
@@ -108,13 +116,20 @@ public class MonitorController {
                 if (faults[4].compareTo("1") == 0) {
                     curr_gauges[id_module].setLedColor(Color.MAGENTA);
                     curr_gauges[id_module].setLedOn(true);
+                    flag = true;
                 } else if (faults[5].compareTo("1") == 0) {
                     curr_gauges[id_module].setLedColor(Color.ORANGE);
                     curr_gauges[id_module].setLedOn(true);
+                    flag = true;
                 } else {
                     curr_gauges[id_module].setLedColor(Color.BLACK);
                     curr_gauges[id_module].setLedOn(false);
                 }
+
+            if(flag)
+                tabs[id_module].getStyleClass().set(1,"tab-pane-alert");
+            else
+                tabs[id_module].getStyleClass().set(1,"tab-pane");
         }
     }
 
@@ -212,6 +227,7 @@ public class MonitorController {
         temp_hbox = new HBox[sources.length];
         curr_hbox = new HBox[sources.length];
         container_hbox = new HBox[sources.length];
+        tabs = new Tab[sources.length];
         volt_gauges = new Gauge[sources.length][];
         temp_gauges = new Gauge[sources.length][];
         curr_gauges = new Gauge[sources.length];
@@ -227,8 +243,8 @@ public class MonitorController {
         for(int i = 0; i < sources.length; i++) {
             it.unicas.engsoftwareproject.Module m = DataHandler.getInstance().getModule(i);
 
-            Tab tab = new Tab("Module" + (i+1) );
-            tab.setId(Integer.toString(i));
+            tabs[i] = new Tab("Module" + (i+1));
+            tabs[i].setId(Integer.toString(i));
 
             window_hbox[i] = new HBox();
             indicators_vbox[i] = new VBox();
@@ -240,14 +256,15 @@ public class MonitorController {
             volt_gauges[i] = new Gauge[m.getNumVoltSens()];
             temp_gauges[i] = new Gauge[m.getNumTempSens()];
 
-            tab.setContent(window_hbox[i]);
-            tabpane.getTabs().add(tab);
+            tabs[i].setContent(window_hbox[i]);
+            tabpane.getTabs().add(tabs[i]);
 
             window_hbox[i].getStyleClass().add("window-hbox");
             volt_hbox[i].getStyleClass().add("gauge-hbox");
             temp_hbox[i].getStyleClass().add("gauge-hbox");
             stats_vbox[i].getStyleClass().add("stats-vbox");
             curr_hbox[i].getStyleClass().add("gauge-hbox");
+            tabs[i].getStyleClass().add("tab-pane-alert");
 
             indicators_vbox[i].setSpacing(20);
             container_hbox[i].setSpacing(20);
