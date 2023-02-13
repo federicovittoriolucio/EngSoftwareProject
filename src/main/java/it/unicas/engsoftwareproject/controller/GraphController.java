@@ -331,18 +331,23 @@ public class GraphController {
             if(s.isVisible()) {
                 if (max < s.getMaxY()) {
                     max = s.getMaxY();
-                    flag = true;
                 }
                 if (min > s.getMinY()) {
                     min = s.getMinY();
-                    flag = true;
                 }
+                flag = true;
             }
 
 
         if(flag) {
-            yaxis[module_id][graph_id].setMaxValue(max + 0.1 * max);
-            yaxis[module_id][graph_id].setMinValue(min - 0.1 * Math.abs(min));
+            if(min > yaxis[module_id][graph_id].getMaxValue()) {
+                yaxis[module_id][graph_id].setMaxValue(max + 0.1 * max);
+                yaxis[module_id][graph_id].setMinValue(min - 0.1 * Math.abs(min));
+            }
+            else {
+                yaxis[module_id][graph_id].setMinValue(min - 0.1 * Math.abs(min));
+                yaxis[module_id][graph_id].setMaxValue(max + 0.1 * max);
+            }
             yaxis[module_id][graph_id].setTickLabelsVisible(true);
         }
     }
