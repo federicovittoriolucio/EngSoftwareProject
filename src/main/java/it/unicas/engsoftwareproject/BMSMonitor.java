@@ -8,8 +8,19 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * Runnable class initialized at the beginning of execution of the program.
+ */
 public class BMSMonitor extends Application {
+
     public static ArrayList<Stage> stagelist;
+
+    /**
+     * Given the initial stage, loads the menu fxml into the scene and displays the Menu Stage.
+     * @see it.unicas.engsoftwareproject.controller.MenuController
+     * @param stage Primary stage displayed at launch. (Menu Monitor)
+     * @throws IOException Expection thrown loading the menu-view fxml.
+     */
     @Override
     public void start(Stage stage) throws IOException {
 
@@ -28,6 +39,11 @@ public class BMSMonitor extends Application {
 
     }
 
+    /**
+     * The main calls the launch() method (Application Class) which implicitly calls start.
+     * @see BMSMonitor#start(Stage)
+     * @param args Arguments not used.
+     */
     public static void main(String[] args) {
         launch();
     }

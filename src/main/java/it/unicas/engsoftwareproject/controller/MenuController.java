@@ -14,11 +14,23 @@ import java.io.IOException;
 
 import it.unicas.engsoftwareproject.DataHandler;
 
+/**
+ * Controller of the Menu Stage, using menu-view fxml file.
+ * Manages user interface and interaction of the menu: the user is able to select data sources and sample time for the execution.
+ */
 public class MenuController {
     @FXML
     private ListView<String> listview;
     @FXML
     private TextField timefield;
+
+    /**
+     * Method called on action for "Start Simulation" button selection, storing and checking the given paths in the list view, notifying the MonitorController class with such settings and finally setups the monitor stage.
+     * It also checks if given sources and sample time are valid.
+     * Hides in the background until the monitor stage is closed.
+     * @see MonitorController#setSettings(String[], int)
+     * @see MenuController#showAlert(String, String)
+     */
     @FXML
     protected void startSimulation(){
 
@@ -61,6 +73,11 @@ public class MenuController {
 
 
     }
+
+    /**
+     * Method called on action for "Add Module" button selection, adding specified file path from the user in the list view.
+     * @see MenuController#showAlert(String, String)
+     */
     @FXML
     protected void addModule()
     {
@@ -78,13 +95,22 @@ public class MenuController {
         System.out.println(listview.getItems().size());
 
     }
+
+    /**
+     * Delete selected item from the user in the list view.
+     */
     @FXML
-    void deleteModule(ActionEvent e)
+    void deleteModule()
     {
         listview.getItems().remove(listview.getSelectionModel().getSelectedItem());
         System.out.println(listview.getItems().size());
     }
 
+    /**
+     * Creates a stage alert to be displayed to the user for a given reason.
+     * @param title Title to be displayed.
+     * @param description Alert content to be displayed (reason).
+     */
     private void showAlert(String title, String description)
     {
         Alert alert = new Alert(Alert.AlertType.ERROR);

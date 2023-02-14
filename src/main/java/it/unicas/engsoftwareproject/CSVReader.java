@@ -8,6 +8,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
+/**
+ * Implementation of DataSource, manages reading CSV files.
+ */
 public class CSVReader implements DataSource {
 
     private ArrayList<String> fields;
@@ -25,9 +28,19 @@ public class CSVReader implements DataSource {
     private Timer timer;
     private Scanner reader;
 
+    /**
+     * Enumerator used to keep track of every feasible state of the reader.
+     */
     enum State {INACTIVE, RUNNING, PAUSE, END}
     State state;
 
+    /**
+     * Initialize the reader, storing the amount of fields, and add such active module to DataHandler.
+     * @param pathname CSV system path.
+     * @param T Sample time of the simulation.
+     * @throws FileNotFoundException Exception thrown when the system path is not valid.
+     * @see DataHandler
+     */
     public CSVReader(String pathname, int T) throws FileNotFoundException {
         id = INSTANCE_COUNTER;
         INSTANCE_COUNTER++;
@@ -36,7 +49,7 @@ public class CSVReader implements DataSource {
         path = pathname;
         sampletime = T;
         System.out.println(path);
-        sc.useDelimiter(",");   //sets the delimiter pattern
+        sc.useDelimiter(",");   // sets the delimiter pattern
         fields = new ArrayList<String>();
         String linefield = sc.nextLine();
         String[] field = linefield.split(",");
@@ -75,6 +88,11 @@ public class CSVReader implements DataSource {
         sc.close();
     }
 
+    /**
+     * Implementation of the start method, once started updates data every sample time milliseconds scheduling an attribute timer of the class.
+     * @throws FileNotFoundException Exception thrown when the system path is not valid.
+     * @see CSVReader#update()
+     */
     public void start() throws FileNotFoundException
     {
         reader = new Scanner(new File(path));
@@ -89,6 +107,11 @@ public class CSVReader implements DataSource {
         }, 0, sampletime);
     }
 
+    /**
+     * Implementation of the update method, whenever called, updates data reading calling the DataHandler singleton.
+     * If reaches end of file, calls stop() and updates state.
+     * @see DataHandler
+     */
     public void update()
     {
         if(reader.hasNextLine()) {
@@ -102,6 +125,9 @@ public class CSVReader implements DataSource {
         }
     }
 
+    /**
+     * Implementation of the pause method, whenever called, pauses the reader execution and updates state.
+     */
     public void pause()
     {
         if(state == State.RUNNING) {
@@ -112,6 +138,9 @@ public class CSVReader implements DataSource {
         }
     }
 
+    /**
+     * Implementation of the resume method, whenever called, resume reading and updates state.
+     */
     public void resume()
     {
         if(state == State.PAUSE) {
@@ -128,12 +157,20 @@ public class CSVReader implements DataSource {
         }
     }
 
+    /**
+     * Implementation of the stop method, whenever called, stops the reader execution and close the file reader.
+     */
     public void stop()
     {
         timer.cancel();
         timer.purge();
         reader.close();
     }
+
+    /**
+     * Resets counter whenever called (used to reset CSV Readers stopping the simulation)
+     * @see it.unicas.engsoftwareproject.controller.MonitorController
+     */
     static public void resetCounter()
     {
         INSTANCE_COUNTER = 0;

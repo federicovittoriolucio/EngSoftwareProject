@@ -25,11 +25,16 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import java.io.IOException;
 
+/**
+ * Controller of the Monitor Stage, using monitor-view fxml file.
+ * Manages user interface and interaction with every graphic item such as tabs, labels, gauges, and LEDs on the stage. Updating displayed data according to the sample time.
+ */
 public class MonitorController {
 
     @FXML
     private TabPane tabpane;
 
+    // Graphic layout items
     private HBox[] window_hbox;
     private VBox[] indicators_vbox;
     private VBox[] stats_vbox;
@@ -38,6 +43,7 @@ public class MonitorController {
     private HBox[] curr_hbox;
     private HBox[] container_hbox;
 
+    // Graphic items
     static private Tab[] tabs;
     static private Gauge[][] volt_gauges;
     static private Gauge[][] temp_gauges;
@@ -49,10 +55,19 @@ public class MonitorController {
     static private TextField[] vavg_textfield;
     static private TextField[] vdelta_textfield;
 
+    // Sources and settings
     static DataSource[] sources = null;
     static private int sampletime;
     static private String[] absolutepaths;
 
+    /**
+     * Updates every single dynamic graphic item with the newest values obtained by the DataHandler class.
+     * @param data Data to be updated in the graphic items.
+     * @param faults Faults to be updated in the graphic LED items.
+     * @param stats Stats to be updated in the graphic TextBox items.
+     * @param id_module Module ID to be updated.
+     * @see DataHandler#updateData(String[], int)
+     */
     public static void updateGraphics(Double[] data, String[] faults, Double[] stats, int id_module) {
 
         it.unicas.engsoftwareproject.Module m = DataHandler.getInstance().getModule(id_module);
@@ -131,9 +146,15 @@ public class MonitorController {
             else
                 tabs[id_module].getStyleClass().set(1,"tab-pane");
         }
+        else
+            tabs[id_module].getStyleClass().set(1,"tab-pane");
     }
 
 
+    /**
+     * Method called on action for "Save and Exit" button selection, stores data obtained until that point, closes every connection, resets active module counter and kills the stage monitor window.
+     * @throws IOException Exception thrown by the DataHandler writing methods.
+     */
     @FXML
     protected void backToMenu() throws IOException {
 
@@ -151,7 +172,11 @@ public class MonitorController {
         BMSMonitor.stagelist.get(0).show();
 
     }
-    
+
+    /**
+     * Method called on action for "Pause Module" button selection, pauses the selected Tab module if in running state.
+     * @see DataSource#pause()
+     */
     @FXML
     protected void pauseModule()
     {
@@ -159,6 +184,10 @@ public class MonitorController {
         sources[id_module].pause();
     }
 
+    /**
+     * Method called on action for "Resume Module" button selection, resumes the selected Tab module in pause state.
+     * @see DataSource#resume()
+     */
     @FXML
     protected void resumeModule()
     {
@@ -166,6 +195,10 @@ public class MonitorController {
         sources[id_module].resume();
     }
 
+    /**
+     * Builds and shows the charts stage and setting up the scene: if it has already been created, it will focus on the chart stage.
+     * @see GraphController
+     */
     @FXML
     protected void showGraphWindow(){
 
@@ -194,6 +227,9 @@ public class MonitorController {
         graph_stage.show();
     }
 
+    /**The initialize method is called after the execution of the constructor of the class, initializes graphics and generates the data readers.
+     * @throws IOException Exception thrown at the initialization of the data sources.
+     */
     @FXML
     public void initialize() throws IOException {
 
@@ -213,11 +249,20 @@ public class MonitorController {
         });
     }
 
+    /**
+     * Sets all the necessary settings obtained by the Menu Controller.
+     * @param paths Paths of the sources to be retrieved.
+     * @param T Sample time of the execution.
+     * @see MenuController#startSimulation()
+     */
     static public void setSettings(String[] paths, int T){
         absolutepaths = paths;
         sampletime = T;
     }
 
+    /**
+     * Initialize and place every single graphic element inside the Monitor Stage according to the amount of items, dynamically (Gauges, Labels, TextBoxes, LEDs, ect.)
+     */
     private void initGraphics()
     {
         window_hbox = new HBox[sources.length];

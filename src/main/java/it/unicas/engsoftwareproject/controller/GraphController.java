@@ -20,6 +20,10 @@ import javafx.scene.paint.Color;
 import javafx.stage.WindowEvent;
 import java.util.ArrayList;
 
+/**
+ * Controller of the Chart/Graph Stage, using graph-view fxml file.
+ * manages user interface and interaction with every graphic item in the chart stage (tabs, checkboxes and charts).
+ */
 public class GraphController {
 
     @FXML
@@ -37,6 +41,9 @@ public class GraphController {
     //Graph stuff
     static private ArrayList<XYSeries>[] series;
 
+    /**
+     * The initialize method is called after the execution of the constructor of the class, initializes arrays of every graphic container and adds them to the scene
+     */
     @FXML
     public void initialize(){
 
@@ -149,6 +156,10 @@ public class GraphController {
 
     }
 
+    /**
+     * Creates a xaxis with certain settings given by the library.
+     * @return The xaxis built in the method (sample axis).
+     */
     private Axis createXAxis(){
         return AxisBuilder  .create(Orientation.HORIZONTAL, Position.TOP)
                             .type(AxisType.LINEAR)
@@ -165,6 +176,10 @@ public class GraphController {
                             .build();
     }
 
+    /**
+     * Creates a yaxis with certain settings given by the library.
+     * @return The yaxis built in the method (values axis).
+     */
     private Axis createYAxis(){
         return AxisBuilder  .create(Orientation.VERTICAL, Position.LEFT)
                             .type(AxisType.LINEAR)
@@ -179,6 +194,12 @@ public class GraphController {
                             .build();
     }
 
+    /**
+     * Creates a grid given both axis with certain settings given by the library.
+     * @param x Axis of samples.
+     * @param y Axis of values.
+     * @return Grid with given axis and settings.
+     */
     private Grid createGrid(Axis x, Axis y){
         return GridBuilder  .create(x, y)
                             .gridLinePaint(Color.web("#384C57"))
@@ -190,6 +211,11 @@ public class GraphController {
                             .build();
     }
 
+    /**
+     * Creates an overlapping chart for voltage sensors, an overlapping chart for temperature sensors, a chart for state of charge and a chart for currect if present.
+     * @param module_id Module identification for creation of the graphs.
+     * @return An array of charts (3 or 4) for the module with ID module_id.
+     */
     private XYChart[] createGraphs(int module_id) {
         it.unicas.engsoftwareproject.Module module = DataHandler.getInstance().getModule(module_id);
         int num_charts = 3;
@@ -237,6 +263,12 @@ public class GraphController {
         return charts;
     }
 
+    /**
+     * Creates series for a module with id module_id and using certain settings.
+     * It also set an action event for every checkbox in the module tab for their visibility.
+     * @param module_id Module identification used to initialize series of module module_id.
+     * @see GraphController#updateVisibility(int)
+     */
     private void initSeries(int module_id){
 
         series[module_id] = new ArrayList<>();
@@ -298,12 +330,25 @@ public class GraphController {
         }
     }
 
+    /**
+     * Whenever this method is called, updates visibility of series, with respect to the choices of the checkboxes.
+     * @param module_id Module identification used for the module to update series visibility.
+     * @see GraphController#updateSeries(int)
+     * @see GraphController#initSeries(int)
+     */
     private void updateVisibility(int module_id) {
         for(int i = 0; i < checkboxes[module_id].length; i++)
             series[module_id].get(i).setVisible(checkboxes[module_id][i].isSelected());
         updateSeries(module_id);
     }
 
+    /**
+     * Updates series whenever new values are obtainable from the DataHandler singleton class.
+     * It also calls setYAxisRange to adjust the YAxis range for displayed series.
+     * @param module_id Module identification used for the module to update series values.
+     * @see DataHandler#updateData(String[], int)
+     * @see GraphController#setYAxisRange(int, int, int, int)
+     */
     static public void updateSeries(int module_id){
 
         XYChartItem[][] data = DataHandler.getInstance().getModule(module_id).getLastData(CONST_POINTSNUM);
@@ -321,6 +366,13 @@ public class GraphController {
             setYAxisRange(indextempsens+1,indextempsens+2,3, module_id);
     }
 
+    /**
+     * Updates YAxis ranges with given parameters.
+     * @param begin Begin sublist for YAxis series update.
+     * @param end End sublist for YAxis series update.
+     * @param graph_id Chart id subject to changes.
+     * @param module_id Module identification for the module to update YAxis ranges.
+     */
     static private void setYAxisRange(int begin, int end, int graph_id, int module_id)
     {
         double max = Double.NEGATIVE_INFINITY;
