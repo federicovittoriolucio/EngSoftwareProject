@@ -63,7 +63,8 @@ public class DataHandler {
      * @see GraphController#updateSeries(int)
      * @see Module#addRow(String[])
      */
-    public void updateData(String[] datarow, int id_module) {
+    public void updateData(String[] datarow, int id_module)
+    {
         Module m = modules[id_module];
         m.addRow(datarow);
         Platform.runLater(() -> MonitorController.updateGraphics(id_module));
@@ -76,7 +77,8 @@ public class DataHandler {
      * @param id_module Module ID to be manipulated.
      * @throws IOException Exception thrown if the CSV file can't be built.
      */
-    public void writeStatsCSV(int id_module) throws IOException {
+    public void writeStatsCSV(int id_module) throws IOException
+    {
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy.MM.dd_HH.mm.ss");
         String now = dtf.format(LocalDateTime.now());
@@ -106,6 +108,29 @@ public class DataHandler {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy.MM.dd_HH.mm.ss");
         String now = dtf.format(LocalDateTime.now());
         FileWriter fw = new FileWriter(System.getProperty("user.dir") + "/CSV_out/" + "data_" + now + "_mod_" + id_module + ".csv");
+
+        for(int j = 0; j < modules[id_module].getNumVoltSens(); j++)
+            fw.write("Vcell" + (j+1) +",");
+
+        fw.write("Vstack,");
+
+        for(int j = 0; j < modules[id_module].getNumTempSens(); j++)
+            fw.write("Temp" + (j+1) +",");
+
+        fw.write("SoC");
+
+        if(modules[id_module].getCurrentBool())
+            fw.write(",I");
+
+        if(modules[id_module].getFaultsRow(0) != null) {
+            fw.write(",OV,UV,OT,UT");
+
+            if(modules[id_module].getCurrentBool())
+                fw.write(",W,A");
+
+        }
+
+        fw.write("\n");
 
         for (int i = 0; i < modules[id_module].getNumRows(); i++) {
 
