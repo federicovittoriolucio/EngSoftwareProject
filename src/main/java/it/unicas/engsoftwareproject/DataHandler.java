@@ -132,6 +132,7 @@ public class DataHandler {
 
         fw.write("\n");
 
+
         for (int i = 0; i < modules[id_module].getNumRows(); i++) {
 
             Double[] datarow = modules[id_module].getDataRow(i);
