@@ -59,15 +59,14 @@ public class DataHandler {
      * Updates data logically, and graphically in the Module class and in the displaying containers through the Monitor classes.
      * @param datarow Array of strings containing the data to be updated and displayed on the interface.
      * @param id_module Module ID to be updated.
-     * @see MonitorController#updateGraphics(Double[], String[], Double[], int)
+     * @see MonitorController#updateGraphics(int)
      * @see GraphController#updateSeries(int)
      * @see Module#addRow(String[])
      */
     public void updateData(String[] datarow, int id_module) {
         Module m = modules[id_module];
-        int row = m.getNumRows();
         m.addRow(datarow);
-        Platform.runLater(() -> MonitorController.updateGraphics(m.getDataRow(row), m.getFaultsRow(row), m.getStats(), id_module));
+        Platform.runLater(() -> MonitorController.updateGraphics(id_module));
         if(BMSMonitor.stagelist.size() > 2)
             Platform.runLater(() -> GraphController.updateSeries(id_module));
     }

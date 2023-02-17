@@ -12,6 +12,7 @@ import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -21,6 +22,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import java.io.IOException;
@@ -42,6 +44,7 @@ public class MonitorController {
     private HBox[] temp_hbox;
     private HBox[] curr_hbox;
     private HBox[] container_hbox;
+    private VBox[][] volt_gauges_vbox;
 
     // Graphic items
     static private Tab[] tabs;
@@ -54,6 +57,8 @@ public class MonitorController {
     static private TextField[] vmin_textfield;
     static private TextField[] vavg_textfield;
     static private TextField[] vdelta_textfield;
+    static private TextField[][] vmax_cell_textfield;
+    static private TextField[][] vmin_cell_textfield;
 
     // Sources and settings
     static DataSource[] sources = null;
@@ -62,15 +67,16 @@ public class MonitorController {
 
     /**
      * Updates every single dynamic graphic item with the newest values obtained by the DataHandler class.
-     * @param data Data to be updated in the graphic items.
-     * @param faults Faults to be updated in the graphic LED items.
-     * @param stats Stats to be updated in the graphic TextBox items.
      * @param id_module Module ID to be updated.
      * @see DataHandler#updateData(String[], int)
      */
-    public static void updateGraphics(Double[] data, String[] faults, Double[] stats, int id_module) {
+    public static void updateGraphics(int id_module) {
 
         it.unicas.engsoftwareproject.Module m = DataHandler.getInstance().getModule(id_module);
+        int row = m.getNumRows() - 1;
+        Double[] data = m.getDataRow(row);
+        String[] faults = m.getFaultsRow(row);
+        Double[] stats = m.getStats();
 
         int numvolt = m.getNumVoltSens();
         int numtemp = m.getNumTempSens();
@@ -78,8 +84,11 @@ public class MonitorController {
         int socindex = numvolt+numtemp+1;
         int currindex = numvolt+numtemp+2;
 
-        for(int i = 0; i < numvolt; i++)
+        for(int i = 0; i < numvolt; i++) {
             volt_gauges[id_module][i].valueProperty().set(data[i]);
+            vmax_cell_textfield[id_module][i].setText(String.format("%.3f",m.getStatsRow(i)[0]));
+            vmin_cell_textfield[id_module][i].setText(String.format("%.3f",m.getStatsRow(i)[1]));
+        }
 
         vstack_gauges[id_module].valueProperty().set(data[vstackindex]);
 
@@ -255,7 +264,7 @@ public class MonitorController {
      * @param T Sample time of the execution.
      * @see MenuController#startSimulation()
      */
-    static public void setSettings(String[] paths, int T){
+    static public void setSettings(String[] paths, int T) {
         absolutepaths = paths;
         sampletime = T;
     }
@@ -272,6 +281,7 @@ public class MonitorController {
         temp_hbox = new HBox[sources.length];
         curr_hbox = new HBox[sources.length];
         container_hbox = new HBox[sources.length];
+        volt_gauges_vbox = new VBox[sources.length][];
         tabs = new Tab[sources.length];
         volt_gauges = new Gauge[sources.length][];
         temp_gauges = new Gauge[sources.length][];
@@ -282,7 +292,8 @@ public class MonitorController {
         vmin_textfield = new TextField[sources.length];
         vavg_textfield = new TextField[sources.length];
         vdelta_textfield = new TextField[sources.length];
-
+        vmax_cell_textfield = new TextField[sources.length][];
+        vmin_cell_textfield = new TextField[sources.length][];
 
 
         for(int i = 0; i < sources.length; i++) {
@@ -299,7 +310,10 @@ public class MonitorController {
             curr_hbox[i] = new HBox();
             container_hbox[i] = new HBox();
             volt_gauges[i] = new Gauge[m.getNumVoltSens()];
+            volt_gauges_vbox[i] = new VBox[m.getNumVoltSens()];
             temp_gauges[i] = new Gauge[m.getNumTempSens()];
+            vmax_cell_textfield[i] = new TextField[m.getNumVoltSens()];
+            vmin_cell_textfield[i] = new TextField[m.getNumVoltSens()];
 
             tabs[i].setContent(window_hbox[i]);
             tabpane.getTabs().add(tabs[i]);
@@ -376,7 +390,28 @@ public class MonitorController {
                         .tickLabelColor(Color.WHITE)
                         .build();
 
-                volt_hbox[i].getChildren().add(volt_gauges[i][j]);
+                volt_gauges_vbox[i][j] = new VBox(volt_gauges[i][j]);
+                volt_gauges_vbox[i][j].setAlignment(Pos.CENTER);
+                vmax_cell_textfield[i][j] = new TextField();
+                vmax_cell_textfield[i][j].setMaxWidth(0.35*volt_gauges[i][j].getPrefWidth());
+                vmax_cell_textfield[i][j].setEditable(false);
+                vmin_cell_textfield[i][j] = new TextField();
+                vmin_cell_textfield[i][j].setMaxWidth(0.35*volt_gauges[i][j].getPrefWidth());
+                vmin_cell_textfield[i][j].setEditable(false);
+
+                // Statistical containers
+                Label label = new Label("Max: ");
+                label.setTextFill(Color.WHITE);
+                HBox hbox = new HBox(label, vmax_cell_textfield[i][j]);
+                volt_gauges_vbox[i][j].getChildren().add(hbox);
+                hbox.setAlignment(Pos.CENTER);
+                label = new Label("Min: ");
+                label.setTextFill(Color.WHITE);
+                hbox = new HBox(label, vmin_cell_textfield[i][j]);
+                volt_gauges_vbox[i][j].getChildren().add(hbox);
+                hbox.setAlignment(Pos.CENTER);
+                volt_gauges_vbox[i][j].setSpacing(3);
+                volt_hbox[i].getChildren().add(volt_gauges_vbox[i][j]);
             }
             for(int j = 0; j < m.getNumTempSens(); j++) {
                 temp_gauges[i][j] = GaugeBuilder.create()
