@@ -4,9 +4,14 @@ import it.unicas.engsoftwareproject.controller.GraphController;
 import it.unicas.engsoftwareproject.controller.MonitorController;
 
 import javafx.application.Platform;
+
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -86,7 +91,11 @@ public class DataHandler {
         // Building stats file
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy.MM.dd_HH.mm.ss");
         String now = dtf.format(LocalDateTime.now());
-        FileWriter fw = new FileWriter(System.getProperty("user.dir") + "/CSV_out/" + "stats_" + now + "_mod_" +  id_module + ".csv");
+        String path = System.getProperty("user.dir") + "/CSV_out/";
+
+        if(!Files.exists(Paths.get(path)))
+            new File(path).mkdirs();
+        FileWriter fw = new FileWriter(path + "stats_" + now + "_mod_" +  id_module + ".csv");
         // Writing stats fields
         fw.write("vmax, vmin, vavg, vdelta\n");
 
@@ -114,7 +123,11 @@ public class DataHandler {
         // Building data file
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy.MM.dd_HH.mm.ss");
         String now = dtf.format(LocalDateTime.now());
-        FileWriter fw = new FileWriter(System.getProperty("user.dir") + "/CSV_out/" + "data_" + now + "_mod_" + id_module + ".csv");
+        String path = System.getProperty("user.dir") + "/CSV_out/";
+
+        if(!Files.exists(Paths.get(path)))
+            new File(path).mkdirs();
+        FileWriter fw = new FileWriter(path + "data_" + now + "_mod_" + id_module + ".csv");
 
         // Writing data fields
         for(int j = 0; j < modules[id_module].getNumVoltSens(); j++)
