@@ -401,6 +401,7 @@ public class GraphController {
                 flag = true;
             }
 
+
         // If series are visible, updates yaxis to adapt to new constraints
         if(flag) {
             if(min > yaxis[module_id][graph_id].getMaxValue()) {
