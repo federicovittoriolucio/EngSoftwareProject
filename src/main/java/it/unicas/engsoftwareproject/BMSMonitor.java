@@ -24,11 +24,11 @@ public class BMSMonitor extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
+        // Generates a new stage, loads the required fxml, assigns the new scene and show the newly created stage (Menu)
         stagelist = new ArrayList<>();
         stagelist.add(stage);
         FXMLLoader fxmlLoader = new FXMLLoader(BMSMonitor.class.getResource("menu-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
-        // To use bootstrap:
         scene.getStylesheets().add("org/kordamp/bootstrapfx/bootstrapfx.css");
         scene.getStylesheets().getClass().getResource("CustomStylesheet.css");
         stage.setScene(scene);

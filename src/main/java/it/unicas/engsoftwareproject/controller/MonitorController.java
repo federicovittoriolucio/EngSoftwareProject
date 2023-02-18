@@ -72,38 +72,47 @@ public class MonitorController {
      */
     public static void updateGraphics(int id_module) {
 
+        // Obtaining statistical data to display
         it.unicas.engsoftwareproject.Module m = DataHandler.getInstance().getModule(id_module);
         int row = m.getNumRows() - 1;
         Double[] data = m.getDataRow(row);
         String[] faults = m.getFaultsRow(row);
         Double[] stats = m.getStats();
 
+        // Obtaining fields and index data
         int numvolt = m.getNumVoltSens();
         int numtemp = m.getNumTempSens();
         int vstackindex = numvolt;
         int socindex = numvolt+numtemp+1;
         int currindex = numvolt+numtemp+2;
 
+        // Updating cell gauge data and his statistical data
         for(int i = 0; i < numvolt; i++) {
             volt_gauges[id_module][i].valueProperty().set(data[i]);
             vmax_cell_textfield[id_module][i].setText(String.format("%.3f",m.getStatsRow(i)[0]));
             vmin_cell_textfield[id_module][i].setText(String.format("%.3f",m.getStatsRow(i)[1]));
         }
 
+        // Updating VStack gauge data
         vstack_gauges[id_module].valueProperty().set(data[vstackindex]);
 
+        // Updating temperature gauge data
         for(int i = 0; i < numtemp; i++)
             temp_gauges[id_module][i].valueProperty().set(data[i+numvolt+1]);
 
+        // Updating State of Charge data
         soc_gauges[id_module].valueProperty().set(data[socindex]);
+        // Updating current gauge data if present
         if(m.getCurrentBool())
             curr_gauges[id_module].valueProperty().set(data[currindex]);
 
+        // Updating global module data
         vmax_textfield[id_module].setText(String.format("%.3f", stats[0]));
         vmin_textfield[id_module].setText(String.format("%.3f", stats[1]));
         vavg_textfield[id_module].setText(String.format("%.3f", stats[2]));
         vdelta_textfield[id_module].setText(String.format("%.3f", stats[3]));
 
+        // Updating LEDs faults for every gauge if faults are present
         if (faults != null) {
 
             boolean flag = false;
@@ -150,6 +159,7 @@ public class MonitorController {
                     curr_gauges[id_module].setLedOn(false);
                 }
 
+            // Updating color of the tab label if fault has occurred in this specific module
             if(flag)
                 tabs[id_module].getStyleClass().set(1,"tab-pane-alert");
             else
@@ -167,15 +177,18 @@ public class MonitorController {
     @FXML
     protected void backToMenu() throws IOException {
 
+        // Stores analyzed data until backToMenu() has been called
         for (int i = 0; i < sources.length; i++){
             sources[i].stop();
             DataHandler.getInstance().writeDataCSV(i);
             DataHandler.getInstance().writeStatsCSV(i);
         }
 
+        // Resets static attributes used to keep track of the modules
         CSVReader.resetCounter();
         DataHandler.getInstance().resetActivemodules();
 
+        // Closes stage and re-shows Menu Stage
         BMSMonitor.stagelist.get(1).close();
         BMSMonitor.stagelist.remove(1);
         BMSMonitor.stagelist.get(0).show();
@@ -189,6 +202,7 @@ public class MonitorController {
     @FXML
     protected void pauseModule()
     {
+        // Pauses module selected in tab-pane
         int id_module = Integer.parseInt(tabpane.getSelectionModel().getSelectedItem().getId());
         sources[id_module].pause();
     }
@@ -200,6 +214,7 @@ public class MonitorController {
     @FXML
     protected void resumeModule()
     {
+        // Resumes module selected in tab-pane
         int id_module = Integer.parseInt(tabpane.getSelectionModel().getSelectedItem().getId());
         sources[id_module].resume();
     }
@@ -211,11 +226,13 @@ public class MonitorController {
     @FXML
     protected void showGraphWindow(){
 
+        // Focuses on graph stage if already present
         if(BMSMonitor.stagelist.size() > 2) {
             BMSMonitor.stagelist.get(2).requestFocus();
             return;
         }
 
+        // Generates a new stage, loads the required fxml, assigns the new scene and show the newly created stage (Graph)
         Stage graph_stage = new Stage();
         BMSMonitor.stagelist.add(graph_stage);
         FXMLLoader fxmlLoader = new FXMLLoader(BMSMonitor.class.getResource("graph-view.fxml"));
@@ -242,13 +259,17 @@ public class MonitorController {
     @FXML
     public void initialize() throws IOException {
 
+        // Generates data readers (Check this method if source has to change)
         sources = DataHandler.getInstance().genReaders(absolutepaths, sampletime);
 
+        // Initiate graphics
         initGraphics();
 
+        // Starts data readers
         for(int i = 0; i < sources.length; i++)
             sources[i].start();
 
+        // Set on close request to completely shut down the application
         BMSMonitor.stagelist.get(1).setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent t) {
@@ -274,6 +295,7 @@ public class MonitorController {
      */
     private void initGraphics()
     {
+        // Initialization of arrays for graphical containers, Medusa's gauges and statistical data TextFields
         window_hbox = new HBox[sources.length];
         indicators_vbox = new VBox[sources.length];
         stats_vbox = new VBox[sources.length];
@@ -296,12 +318,14 @@ public class MonitorController {
         vmin_cell_textfield = new TextField[sources.length][];
 
 
+        // Initialization and positioning of graphical containers
         for(int i = 0; i < sources.length; i++) {
             it.unicas.engsoftwareproject.Module m = DataHandler.getInstance().getModule(i);
 
             tabs[i] = new Tab("Module" + (i+1));
             tabs[i].setId(Integer.toString(i));
 
+            // Containers
             window_hbox[i] = new HBox();
             indicators_vbox[i] = new VBox();
             stats_vbox[i] = new VBox();
@@ -333,7 +357,7 @@ public class MonitorController {
             HBox.setHgrow(window_hbox[i], Priority.ALWAYS);
             HBox.setHgrow(curr_hbox[i], Priority.ALWAYS);
 
-
+            // Gauges and cell statistical containers
             if(m.getCurrentBool()) {
                 curr_gauges[i] = GaugeBuilder.create()
                         .maxValue(100)
@@ -399,7 +423,7 @@ public class MonitorController {
                 vmin_cell_textfield[i][j].setMaxWidth(0.35*volt_gauges[i][j].getPrefWidth());
                 vmin_cell_textfield[i][j].setEditable(false);
 
-                // Statistical containers
+                // Cell statistical containers
                 Label label = new Label("Max: ");
                 label.setTextFill(Color.WHITE);
                 HBox hbox = new HBox(label, vmax_cell_textfield[i][j]);
@@ -431,6 +455,7 @@ public class MonitorController {
                 temp_hbox[i].getChildren().add(temp_gauges[i][j]);
             }
 
+            // Labels and Textfields
             Label vmax_label = new Label("Max Voltage");
             Label vmin_label = new Label("Min Voltage");
             Label vavg_label = new Label("Avg Voltage");

@@ -26,19 +26,20 @@ import java.util.ArrayList;
  */
 public class GraphController {
 
+    // Points displayed in graphs
+    final static private int CONST_POINTSNUM = 25;
+    // Graphic layout containers
     @FXML
     private TabPane graphtabpane;
-    final static private int CONST_POINTSNUM = 25;
     private Tab[] graphtabs;
     private HBox[] tabhbox;
     private ScrollPane[] scrollpane;
     private VBox[] menuvbox;
+    // Checkboxes and graph related items
     private CheckBox[][] checkboxes;
     private GridPane[] gridpane;
     private static Axis[][] yaxis;
     private String[] colorarray;
-
-    //Graph stuff
     static private ArrayList<XYSeries>[] series;
 
     /**
@@ -56,6 +57,7 @@ public class GraphController {
 
         int module_number = DataHandler.getInstance().getActiveModules();
 
+        // Color array used to paint series
         colorarray = new String[] { "#ff4545", // light red
                                     "#607dfc", // light blue
                                     "#fcf960", // light yellow
@@ -66,6 +68,7 @@ public class GraphController {
                                     "#ed05a7", // pink
                                     "#FFFFFF"};// white
 
+        // Initialization of arrays for graphical containers and graphs related items
         graphtabs = new Tab[module_number];
         tabhbox = new HBox[module_number];
         scrollpane = new ScrollPane[module_number];
@@ -76,6 +79,7 @@ public class GraphController {
 
         series = new ArrayList[module_number];
 
+        // Initialization of graph items, graphical containers and their positioning in the tab
         for(int i = 0; i < module_number; i++) {
 
             it.unicas.engsoftwareproject.Module module = DataHandler.getInstance().getModule(i);
@@ -104,6 +108,7 @@ public class GraphController {
             gridpane[i].setHgap(20);
             gridpane[i].setVgap(20);
 
+            // Checkboxes
             for (int j = 0; j < module.getNumVoltSens(); j++) {
                 checkboxes[i][j] = new CheckBox("Cell " + (j + 1) + " voltage");
             }
@@ -127,6 +132,7 @@ public class GraphController {
                 check.getStyleClass().add("checkbox");
             }
 
+            // Children assignment
             menuvbox[i].getChildren().addAll(checkboxes[i]);
             scrollpane[i].setContent(menuvbox[i]);
             tabhbox[i].getChildren().addAll(scrollpane[i], gridpane[i]);
@@ -134,6 +140,7 @@ public class GraphController {
 
             HBox.setHgrow(gridpane[i], Priority.ALWAYS);
 
+            // Series initialization
             initSeries(i);
 
             int num_charts = 3;
@@ -271,6 +278,7 @@ public class GraphController {
      */
     private void initSeries(int module_id){
 
+        // Initialization of series, and assignment to his checkbox
         series[module_id] = new ArrayList<>();
         int indexvoltsens = DataHandler.getInstance().getModule(module_id).getNumVoltSens() + 1;
         int indextempsens = indexvoltsens + DataHandler.getInstance().getModule(module_id).getNumTempSens();
@@ -351,6 +359,7 @@ public class GraphController {
      */
     static public void updateSeries(int module_id){
 
+        // Obtain last "CONST_POINTSNUM" points and updates their series
         XYChartItem[][] data = DataHandler.getInstance().getModule(module_id).getLastData(CONST_POINTSNUM);
 
         int indexvoltsens = DataHandler.getInstance().getModule(module_id).getNumVoltSens() + 1;
@@ -359,9 +368,11 @@ public class GraphController {
         for(int i = 0; i < data.length; i++)
             series[module_id].get(i).setItems(data[i]);
 
+        // Updating ranges
         setYAxisRange(0, indexvoltsens, 0, module_id);
         setYAxisRange(indexvoltsens, indextempsens, 1, module_id);
 
+        // If current chart is present, updates range
         if(DataHandler.getInstance().getModule(module_id).getCurrentBool())
             setYAxisRange(indextempsens+1,indextempsens+2,3, module_id);
     }
@@ -390,7 +401,7 @@ public class GraphController {
                 flag = true;
             }
 
-
+        // If series are visible, updates yaxis to adapt to new constraints
         if(flag) {
             if(min > yaxis[module_id][graph_id].getMaxValue()) {
                 yaxis[module_id][graph_id].setMaxValue(max + 0.1 * max);

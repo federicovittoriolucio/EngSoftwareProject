@@ -15,7 +15,6 @@ import java.time.format.DateTimeFormatter;
  */
 public class DataHandler {
     private static DataHandler instance = null;
-    private int sampletime;
 
     /**
      * Used to reference the singleton class object.
@@ -27,9 +26,12 @@ public class DataHandler {
         return instance;
     }
 
+    // Max amount of modules
     final public int CONST_NUMMODULES = 6;
+    // Number of active modules
     private int activemodules = 0;
 
+    // Modules container
     private Module[] modules = null;
 
     /**
@@ -39,7 +41,7 @@ public class DataHandler {
         modules = new Module[CONST_NUMMODULES];
     }
 
-    /** Generates a module with fields such given the arguments and increases the amount of active modules.
+    /** Generates a module with fields given by the arguments and increases the amount of active modules (the maximum amount of modules is fixed).
      * @param numvoltsens Number of voltage sensors.
      * @param numtempsens Number of temperature sensors.
      * @param current Presence of current.
@@ -66,7 +68,9 @@ public class DataHandler {
     public void updateData(String[] datarow, int id_module)
     {
         Module m = modules[id_module];
+        // adds data row to the specific module
         m.addRow(datarow);
+        // updates graphics
         Platform.runLater(() -> MonitorController.updateGraphics(id_module));
         if(BMSMonitor.stagelist.size() > 2)
             Platform.runLater(() -> GraphController.updateSeries(id_module));
@@ -79,12 +83,14 @@ public class DataHandler {
      */
     public void writeStatsCSV(int id_module) throws IOException
     {
-
+        // Building stats file
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy.MM.dd_HH.mm.ss");
         String now = dtf.format(LocalDateTime.now());
         FileWriter fw = new FileWriter(System.getProperty("user.dir") + "/CSV_out/" + "stats_" + now + "_mod_" +  id_module + ".csv");
+        // Writing stats fields
         fw.write("vmax, vmin, vavg, vdelta\n");
 
+        // Writing actual stats
         for (int i = 0; i < modules[id_module].getNumVoltSens(); i++) {
 
             Double[] row = modules[id_module].getStatsRow(i);
@@ -105,10 +111,12 @@ public class DataHandler {
      */
     public void writeDataCSV(int id_module) throws IOException {
 
+        // Building data file
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy.MM.dd_HH.mm.ss");
         String now = dtf.format(LocalDateTime.now());
         FileWriter fw = new FileWriter(System.getProperty("user.dir") + "/CSV_out/" + "data_" + now + "_mod_" + id_module + ".csv");
 
+        // Writing data fields
         for(int j = 0; j < modules[id_module].getNumVoltSens(); j++)
             fw.write("Vcell" + (j+1) +",");
 
@@ -132,7 +140,7 @@ public class DataHandler {
 
         fw.write("\n");
 
-
+        // Writing actual data
         for (int i = 0; i < modules[id_module].getNumRows(); i++) {
 
             Double[] datarow = modules[id_module].getDataRow(i);
@@ -169,12 +177,16 @@ public class DataHandler {
      */
     public DataSource[] genReaders(String[] paths, int sampletime) throws FileNotFoundException {
 
+        // Generating data readers
+        // ***IMPORTANT***
+        // You need to change this part of the code in a way that it works for the desired data source
+
+        // Generating CSVReaders
         CSVReader[] readers = new CSVReader[paths.length];
 
         for (int i = 0; i < readers.length; i++)
             readers[i] = new CSVReader(paths[i], sampletime);
 
-        this.sampletime = sampletime;
         return readers;
     }
 

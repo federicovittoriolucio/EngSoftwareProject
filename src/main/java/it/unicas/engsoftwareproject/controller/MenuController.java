@@ -19,8 +19,11 @@ import it.unicas.engsoftwareproject.DataHandler;
  * Manages user interface and interaction of the menu: the user is able to select data sources and sample time for the execution.
  */
 public class MenuController {
+    // List of sources to analyze
     @FXML
     private ListView<String> listview;
+
+    // Sample time of the simulation
     @FXML
     private TextField timefield;
 
@@ -34,6 +37,7 @@ public class MenuController {
     @FXML
     protected void startSimulation(){
 
+        // Show alerts if exceptions may occur
         if (listview.getItems().size() == 0) {
             showAlert("Alert","You haven't provided any data source.");
             return;
@@ -48,9 +52,10 @@ public class MenuController {
                 return;
             }
 
-
+        // Notifies MonitorController about paths and sample time to use for the simulation
         MonitorController.setSettings(listview.getItems().toArray(new String[0]), Integer.parseInt(timefield.getText()));
 
+        // Generates a new stage, loads the required fxml, assigns the new scene and show the newly created stage (Monitor)
         BMSMonitor.stagelist.get(0).hide();
         Stage monitor_stage = new Stage();
         BMSMonitor.stagelist.add(monitor_stage);
@@ -61,7 +66,7 @@ public class MenuController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        // To use bootstrap:
+        // Loads bootstrap and custom stylesheet
         monitor_scene.getStylesheets().add(BMSMonitor.class.getResource("CustomStylesheet.css").toExternalForm());
         monitor_scene.getStylesheets().add("org/kordamp/bootstrapfx/bootstrapfx.css");
         monitor_stage.setScene(monitor_scene);

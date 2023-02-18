@@ -78,21 +78,26 @@ public class Module {
      */
     public Module(int numvoltsens, int numtempsens, boolean current, boolean faults, int id)
     {
+        // Initalization of members of the class, given them as arguments
         this.id = id;
         numfields = numvoltsens + numtempsens + (current ? 1:0) + CONST_NUMVSTACKSOC;
         numfaults = CONST_NUMFAULTS+(current ? 1:0)*CONST_CURRENTFAULTS;
         this.numvoltsens = numvoltsens;
         this.numtempsens = numtempsens;
         this.current = current;
+        // Initiating container for data
         data = new ArrayList[numfields];
         for(int i = 0; i < data.length; i++)
             data[i] = new ArrayList();
+
+        // Initiating container for faults if present
         if(faults) {
             faultsdata = new ArrayList[numfaults];
             for(int i = 0; i < faultsdata.length; i++)
                 faultsdata[i] = new ArrayList();
         }
 
+        // Initialization of statistical data
         vmax = new Double[numvoltsens];
         vmin = new Double[numvoltsens];
         vavg = new Double[numvoltsens];
@@ -128,6 +133,7 @@ public class Module {
             for(int i = 0; i < numfaults; i++)
                 faultsdata[i].add(row[i + numfields]);
 
+        // Updating new statistical data with the new sample
         updateMax();
         updateMin();
         updateAvg();
@@ -187,7 +193,7 @@ public class Module {
     }
 
     /**
-     * Stores the raw data at postion row_id into an array and returns it.
+     * Stores the raw data at position row_id into an array and returns it.
      * @param row_id Number identification of the row
      * @return The data row at position row_id
      */

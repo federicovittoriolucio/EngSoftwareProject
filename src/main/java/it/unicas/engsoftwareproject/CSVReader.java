@@ -42,6 +42,7 @@ public class CSVReader implements DataSource {
      * @see DataHandler
      */
     public CSVReader(String pathname, int T) throws FileNotFoundException {
+        // Initalization of members of the class (reads file to obtain fields properties)
         id = INSTANCE_COUNTER;
         INSTANCE_COUNTER++;
         state = State.INACTIVE;
@@ -83,6 +84,7 @@ public class CSVReader implements DataSource {
         System.out.println("Current: " + current);
         System.out.println("Faults: " + faults);
 
+        // Creates a new module if CSV reading is successful
         DataHandler.getInstance().addModule(numvoltsens,numtempsens,current,faults,id);
 
         sc.close();
@@ -95,6 +97,7 @@ public class CSVReader implements DataSource {
      */
     public void start() throws FileNotFoundException
     {
+        // Starts reading file at location "path" and schedules a timer for update every "sampletime"
         reader = new Scanner(new File(path));
         reader.nextLine();
         state = State.RUNNING;
@@ -114,6 +117,7 @@ public class CSVReader implements DataSource {
      */
     public void update()
     {
+        // Reads new line when called and organizes it in a string array (otherwise stops execution)
         if(reader.hasNextLine()) {
             String line = reader.nextLine();
             String[] rowline = line.split(",");
@@ -130,11 +134,11 @@ public class CSVReader implements DataSource {
      */
     public void pause()
     {
+        // If reading, pauses execution
         if(state == State.RUNNING) {
             state = State.PAUSE;
             timer.cancel();
             timer.purge();
-            System.out.println("Blocco il timer");
         }
     }
 
@@ -143,11 +147,10 @@ public class CSVReader implements DataSource {
      */
     public void resume()
     {
+        // if paused, resume execution
         if(state == State.PAUSE) {
-            // Ripristina il timer associato allo scanner principale
             state = State.RUNNING;
             timer = new Timer();
-            System.out.println("Riattivo il timer");
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
@@ -162,6 +165,7 @@ public class CSVReader implements DataSource {
      */
     public void stop()
     {
+        // Purges timer and closes reader
         timer.cancel();
         timer.purge();
         reader.close();
