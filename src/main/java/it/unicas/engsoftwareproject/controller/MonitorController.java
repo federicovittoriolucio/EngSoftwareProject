@@ -417,10 +417,10 @@ public class MonitorController {
                 volt_gauges_vbox[i][j] = new VBox(volt_gauges[i][j]);
                 volt_gauges_vbox[i][j].setAlignment(Pos.CENTER);
                 vmax_cell_textfield[i][j] = new TextField();
-                vmax_cell_textfield[i][j].setMaxWidth(0.35*volt_gauges[i][j].getPrefWidth());
+                vmax_cell_textfield[i][j].setMaxWidth(0.4*volt_gauges[i][j].getPrefWidth());
                 vmax_cell_textfield[i][j].setEditable(false);
                 vmin_cell_textfield[i][j] = new TextField();
-                vmin_cell_textfield[i][j].setMaxWidth(0.35*volt_gauges[i][j].getPrefWidth());
+                vmin_cell_textfield[i][j].setMaxWidth(0.4*volt_gauges[i][j].getPrefWidth());
                 vmin_cell_textfield[i][j].setEditable(false);
 
                 // Cell statistical containers
