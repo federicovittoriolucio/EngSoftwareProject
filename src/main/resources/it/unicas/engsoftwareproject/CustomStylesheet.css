@@ -1,0 +1,94 @@
+.gauge-hbox {
+    -fx-background-color: #333333;
+    -fx-background-radius: 5px;
+    -fx-padding: 20px 20px 20px 20px;
+}
+
+.window-hbox {
+    -fx-background-color: #262626;
+    -fx-padding: 20px 20px 20px 20px;
+    -fx-spacing: 20px;
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: #333333;
+    -fx-border-color: #262626;
+}
+
+.tab-pane .tab {
+    -fx-background-color: #262626;
+}
+
+.tab-pane .tab-label {
+    -fx-background-color: #262626;
+    -fx-text-fill: white;
+    -fx-border-radius: 3px;
+}
+
+.tab-pane-alert .tab-label {
+    -fx-text-fill: red;
+}
+
+.tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
+    -fx-border-color: white;
+}
+
+.window-vbox {
+    -fx-background-color: #262626;
+    -fx-spacing: 20px;
+}
+
+.checkboxes-pane {
+    -fx-background-color: #333333;
+    -fx-background-radius: 5px;
+    -fx-padding: 20px 20px 20px 20px;
+    -fx-control-inner-background: transparent;
+}
+
+.checkboxes-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.checkboxes-vbox{
+    -fx-background-color: transparent;
+    -fx-spacing: 15px;
+}
+
+.checkbox {
+    -fx-text-fill: white;
+}
+
+.checkbox .box:hover {
+    -fx-background-color: #8c8c8c;
+}
+
+.checkbox .box {
+    -fx-background-color: transparent;
+    -fx-border-color: white;
+    -fx-border-radius: 3px;
+}
+
+.button {
+    -fx-background-color: transparent;
+    -fx-border-color: white;
+    -fx-text-fill: white;
+    -fx-border-radius: 3px;
+}
+
+.button:hover {
+    -fx-background-color: #8c8c8c;
+}
+
+.text-field {
+    -fx-background-color: transparent;
+    -fx-border-color: white;
+    -fx-text-fill: white;
+    -fx-border-radius: 3px;
+}
+
+.stats-vbox {
+    -fx-background-color: #333333;
+    -fx-background-radius: 5px;
+    -fx-padding: 20px 20px 20px 20px;
+    -fx-spacing: 20px;
+}

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="mainpane" prefHeight="498.0" prefWidth="557.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicas.engsoftwareproject.controller.MenuController">
+   <children>
+      <Button layoutX="424.0" layoutY="457.0" mnemonicParsing="false" onAction="#startSimulation" styleClass="btn, btn-sm, btn-default" text="Start Simulation" />
+      <Button layoutX="302.0" layoutY="457.0" mnemonicParsing="false" onAction="#addModule" prefHeight="26.0" prefWidth="116.0" styleClass="btn, btn-sm, btn-default" text="Add Module" textAlignment="CENTER" />
+      <ListView fx:id="listview" layoutX="14.0" layoutY="14.0" prefHeight="427.0" prefWidth="526.0" />
+      <Button layoutX="179.0" layoutY="457.0" mnemonicParsing="false" onAction="#deleteModule" prefHeight="26.0" prefWidth="116.0" styleClass="btn, btn-sm, btn-default" text="Delete Module" textAlignment="CENTER" />
+      <TextField fx:id="timefield" layoutX="14.0" layoutY="457.0" prefHeight="26.0" prefWidth="130.0" promptText="Sample Time [ms]" />
+   </children>
+</AnchorPane>
