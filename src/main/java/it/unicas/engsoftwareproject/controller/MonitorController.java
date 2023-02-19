@@ -29,10 +29,11 @@ import java.io.IOException;
 
 /**
  * Controller of the Monitor Stage, using monitor-view fxml file.
- * Manages user interface and interaction with every graphic item such as tabs, labels, gauges, and LEDs on the stage. Updating displayed data according to the sample time.
+ * Manages user interface and interaction with every graphic item such as tabs, labels, gauges, and LEDs on the stage,
+ * updating displayed data according to the sample time.
  */
-public class MonitorController {
-
+public class MonitorController
+{
     @FXML
     private TabPane tabpane;
 
@@ -66,12 +67,12 @@ public class MonitorController {
     static private String[] absolutepaths;
 
     /**
-     * Updates every single dynamic graphic item with the newest values obtained by the DataHandler class.
+     * Updates every single dynamic graphic item with the newest values obtained from the DataHandler class.
      * @param id_module Module ID to be updated.
      * @see DataHandler#updateData(String[], int)
      */
-    public static void updateGraphics(int id_module) {
-
+    public static void updateGraphics(int id_module)
+    {
         // Obtaining statistical data to display
         it.unicas.engsoftwareproject.Module m = DataHandler.getInstance().getModule(id_module);
         int row = m.getNumRows() - 1;
@@ -171,12 +172,13 @@ public class MonitorController {
 
 
     /**
-     * Method called on action for "Save and Exit" button selection, stores data obtained until that point, closes every connection, resets active module counter and kills the stage monitor window.
+     * Method called on action by the "Save and Exit" button, it stores data obtained,
+     * closes every connection, resets active module counter and kills the stage monitor window.
      * @throws IOException Exception thrown by the DataHandler writing methods.
      */
     @FXML
-    protected void backToMenu() throws IOException {
-
+    protected void backToMenu() throws IOException
+    {
         // Stores analyzed data until backToMenu() has been called
         for (int i = 0; i < sources.length; i++){
             sources[i].stop();
@@ -192,11 +194,10 @@ public class MonitorController {
         BMSMonitor.stagelist.get(1).close();
         BMSMonitor.stagelist.remove(1);
         BMSMonitor.stagelist.get(0).show();
-
     }
 
     /**
-     * Method called on action for "Pause Module" button selection, pauses the selected Tab module if in running state.
+     * Method called on action by the "Pause Module" button, it pauses the selected module if in running state.
      * @see DataSource#pause()
      */
     @FXML
@@ -208,7 +209,7 @@ public class MonitorController {
     }
 
     /**
-     * Method called on action for "Resume Module" button selection, resumes the selected Tab module in pause state.
+     * Method called on action by the "Resume Module" button, it resumes the selected module if in paused state.
      * @see DataSource#resume()
      */
     @FXML
@@ -220,12 +221,13 @@ public class MonitorController {
     }
 
     /**
-     * Builds and shows the charts stage and setting up the scene: if it has already been created, it will focus on the chart stage.
+     * Builds and shows the charts stage and sets up the scene:
+     * if it has already been created, it will focus on the chart stage.
      * @see GraphController
      */
     @FXML
-    protected void showGraphWindow(){
-
+    protected void showGraphWindow()
+    {
         // Focuses on graph stage if already present
         if(BMSMonitor.stagelist.size() > 2) {
             BMSMonitor.stagelist.get(2).requestFocus();
@@ -253,19 +255,19 @@ public class MonitorController {
         graph_stage.show();
     }
 
-    /**The initialize method is called after the execution of the constructor of the class, initializes graphics and generates the data readers.
+    /**Called after the execution of the constructor of the class, initializes graphics and generates the data sources.
      * @throws IOException Exception thrown at the initialization of the data sources.
      */
     @FXML
-    public void initialize() throws IOException {
-
+    public void initialize() throws IOException
+    {
         // Generates data readers (Check this method if source has to change)
         sources = DataHandler.getInstance().genReaders(absolutepaths, sampletime);
 
         // Initiate graphics
         initGraphics();
 
-        // Starts data readers
+        // Starts data sources
         for(int i = 0; i < sources.length; i++)
             sources[i].start();
 
@@ -285,13 +287,15 @@ public class MonitorController {
      * @param T Sample time of the execution.
      * @see MenuController#startSimulation()
      */
-    static public void setSettings(String[] paths, int T) {
+    static public void setSettings(String[] paths, int T)
+    {
         absolutepaths = paths;
         sampletime = T;
     }
 
     /**
-     * Initialize and place every single graphic element inside the Monitor Stage according to the amount of items, dynamically (Gauges, Labels, TextBoxes, LEDs, ect.)
+     * Initializes and places every graphic element inside the Monitor Stage.
+     * Dynamically generated according to the amount of items (Gauges, Labels, TextBoxes, LEDs, ect.)
      */
     private void initGraphics()
     {
@@ -487,11 +491,8 @@ public class MonitorController {
             indicators_vbox[i].getChildren().addAll(volt_hbox[i], container_hbox[i]);
             window_hbox[i].getChildren().addAll(indicators_vbox[i],stats_vbox[i]);
 
-            for(Node child : indicators_vbox[i].getChildren()) {
+            for(Node child : indicators_vbox[i].getChildren())
                 VBox.setVgrow(child, Priority.ALWAYS);
-            }
-
         }
-
     }
 }

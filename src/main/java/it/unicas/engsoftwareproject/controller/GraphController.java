@@ -43,11 +43,12 @@ public class GraphController {
     static private ArrayList<XYSeries>[] series;
 
     /**
-     * The initialize method is called after the execution of the constructor of the class, initializes arrays of every graphic container and adds them to the scene
+     * The initialize method is called after the execution of the constructor of the class.
+     * It initializes arrays for every graphic container and adds them to the scene.
      */
     @FXML
-    public void initialize(){
-
+    public void initialize()
+    {
         BMSMonitor.stagelist.get(2).setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent t) {
@@ -109,9 +110,8 @@ public class GraphController {
             gridpane[i].setVgap(20);
 
             // Checkboxes
-            for (int j = 0; j < module.getNumVoltSens(); j++) {
+            for (int j = 0; j < module.getNumVoltSens(); j++)
                 checkboxes[i][j] = new CheckBox("Cell " + (j + 1) + " voltage");
-            }
 
             checkboxes[i][module.getNumVoltSens()] = new CheckBox("Stack voltage");
 
@@ -160,14 +160,14 @@ public class GraphController {
         }
 
         graphtabpane.getTabs().addAll(graphtabs);
-
     }
 
     /**
-     * Creates a xaxis with certain settings given by the library.
-     * @return The xaxis built in the method (sample axis).
+     * Creates an x-axis with certain settings given by the library.
+     * @return The x-axis built in the method (sample axis).
      */
-    private Axis createXAxis(){
+    private Axis createXAxis()
+    {
         return AxisBuilder  .create(Orientation.HORIZONTAL, Position.TOP)
                             .type(AxisType.LINEAR)
                             .minValue(0)
@@ -184,10 +184,11 @@ public class GraphController {
     }
 
     /**
-     * Creates a yaxis with certain settings given by the library.
-     * @return The yaxis built in the method (values axis).
+     * Creates a y-axis with certain settings given by the library.
+     * @return The y-axis built in the method (values axis).
      */
-    private Axis createYAxis(){
+    private Axis createYAxis()
+    {
         return AxisBuilder  .create(Orientation.VERTICAL, Position.LEFT)
                             .type(AxisType.LINEAR)
                             .minValue(0)
@@ -202,12 +203,13 @@ public class GraphController {
     }
 
     /**
-     * Creates a grid given both axis with certain settings given by the library.
+     * Given both axis, it creates a grid with certain settings given by the library.
      * @param x Axis of samples.
      * @param y Axis of values.
      * @return Grid with given axis and settings.
      */
-    private Grid createGrid(Axis x, Axis y){
+    private Grid createGrid(Axis x, Axis y)
+    {
         return GridBuilder  .create(x, y)
                             .gridLinePaint(Color.web("#384C57"))
                             .minorHGridLinesVisible(false)
@@ -219,12 +221,15 @@ public class GraphController {
     }
 
     /**
-     * Creates an overlapping chart for voltage sensors, an overlapping chart for temperature sensors, a chart for state of charge and a chart for currect if present.
+     * Creates an overlapping chart for voltage sensors, an overlapping chart for temperature sensors,
+     * a chart for state of charge and a chart for current if present.
      * @param module_id Module identification for creation of the graphs.
      * @return An array of charts (3 or 4) for the module with ID module_id.
      */
-    private XYChart[] createGraphs(int module_id) {
+    private XYChart[] createGraphs(int module_id)
+    {
         it.unicas.engsoftwareproject.Module module = DataHandler.getInstance().getModule(module_id);
+
         int num_charts = 3;
         if(module.getCurrentBool())
             num_charts = 4;
@@ -271,13 +276,13 @@ public class GraphController {
     }
 
     /**
-     * Creates series for a module with id module_id and using certain settings.
-     * It also set an action event for every checkbox in the module tab for their visibility.
+     * Creates a points series for a module with id module_id and using certain settings.
+     * It also sets an action event for every checkbox in the module tab to toggle the series' visibility.
      * @param module_id Module identification used to initialize series of module module_id.
      * @see GraphController#updateVisibility(int)
      */
-    private void initSeries(int module_id){
-
+    private void initSeries(int module_id)
+    {
         // Initialization of series, and assignment to his checkbox
         series[module_id] = new ArrayList<>();
         int indexvoltsens = DataHandler.getInstance().getModule(module_id).getNumVoltSens() + 1;
@@ -339,26 +344,28 @@ public class GraphController {
     }
 
     /**
-     * Whenever this method is called, updates visibility of series, with respect to the choices of the checkboxes.
+     * Updates visibility of the series based on the checkboxes' status.
      * @param module_id Module identification used for the module to update series visibility.
      * @see GraphController#updateSeries(int)
      * @see GraphController#initSeries(int)
      */
-    private void updateVisibility(int module_id) {
+    private void updateVisibility(int module_id)
+    {
         for(int i = 0; i < checkboxes[module_id].length; i++)
             series[module_id].get(i).setVisible(checkboxes[module_id][i].isSelected());
+
         updateSeries(module_id);
     }
 
     /**
-     * Updates series whenever new values are obtainable from the DataHandler singleton class.
+     * Updates the series whenever new values are obtainable from the DataHandler singleton class.
      * It also calls setYAxisRange to adjust the YAxis range for displayed series.
      * @param module_id Module identification used for the module to update series values.
      * @see DataHandler#updateData(String[], int)
      * @see GraphController#setYAxisRange(int, int, int, int)
      */
-    static public void updateSeries(int module_id){
-
+    static public void updateSeries(int module_id)
+    {
         // Obtain last "CONST_POINTSNUM" points and updates their series
         XYChartItem[][] data = DataHandler.getInstance().getModule(module_id).getLastData(CONST_POINTSNUM);
 

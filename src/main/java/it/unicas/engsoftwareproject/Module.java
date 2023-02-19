@@ -5,12 +5,13 @@ import eu.hansolo.fx.charts.data.XYChartItem;
 import java.util.ArrayList;
 
 /**
- * Class in which every data associated to such module is saved in the right container. Manipulates and manages data on request of DataHandler,
- * It is also used whenever the last N samples are requested.
+ * Class that represents a single module, storing all the necessary data.
+ * It manipulates and manages data on demand from DataHandler.
+ * Also used whenever the last N samples are needed to update the graphs.
  * It also manages the presence of current sensor and faults sensors.
  */
-public class Module {
-
+public class Module
+{
     private int id;
 
     // Constants used to determine the amount of columns.
@@ -18,6 +19,7 @@ public class Module {
     final int CONST_CURRENTFAULTS = 2;
     final int CONST_NUMVSTACKSOC = 2;
     final int CONST_NUMSTATS = 4;
+
     /**
      * The container that stores data (Excluding faults).
      */
@@ -31,7 +33,7 @@ public class Module {
      */
     private int numfields;
     /**
-     * Number of rows (elements).
+     * Number of rows (number of values for each field).
      */
     private int numrows;
     /**
@@ -51,25 +53,25 @@ public class Module {
      */
     private boolean current;
     /**
-     * Stores maximum voltage for every cell.
+     * Stores maximum voltage for each cell.
      */
-    private Double[] vmax = null;
+    private Double[] vmax;
     /**
-     * Stores the minimum voltage for every cell.
+     * Stores the minimum voltage for each cell.
      */
-    private Double[] vmin = null;
+    private Double[] vmin;
 
     /**
-     * Stores the average voltage for every cell.
+     * Stores the average voltage for each cell.
      */
-    private Double[] vavg = null;
+    private Double[] vavg;
     /**
-     * Stores the maximum difference between maximum and minimum voltage per cell.
+     * Stores the maximum difference between maximum and minimum voltage for each cell.
      */
-    private Double[] vdelta = null;
+    private Double[] vdelta;
 
 
-    /** The constructor initialize every container used, and identifies the amount of fields necessary to store data accordingly.
+    /** Constructor: initializes every container used, and identifies the amount of fields necessary to store data accordingly.
      * @param numvoltsens Number of voltage cells.
      * @param numtempsens Number of temperature sensors.
      * @param current Presence of current.
@@ -85,6 +87,7 @@ public class Module {
         this.numvoltsens = numvoltsens;
         this.numtempsens = numtempsens;
         this.current = current;
+
         // Initiating container for data
         data = new ArrayList[numfields];
         for(int i = 0; i < data.length; i++)
@@ -118,7 +121,7 @@ public class Module {
 
     /**
      * Adds the new data row at the end of the data array list and calls the necessary methods to update statistical data.
-     * @param row String array containing data to be added.
+     * @param row String array containing the data to be added.
      * @see Module#updateMax()
      * @see Module#updateMin()
      * @see Module#updateAvg()
@@ -143,36 +146,39 @@ public class Module {
     }
 
     /**
-     * Method that updates maxmimum voltage for every cell.
+     * Updates the maxmimum voltage for each cell.
      */
-    private void updateMax(){
+    private void updateMax()
+    {
         for(int i = 0; i < vmax.length; i++)
             if(vmax[i] < data[i].get(numrows))
                 vmax[i] = data[i].get(numrows);
     }
 
     /**
-     * Method that updates minimum voltage for every cell.
+     * Updates the minimum voltage for each cell.
      */
-    private void updateMin(){
+    private void updateMin()
+    {
         for(int i = 0; i < vmin.length; i++)
             if(vmin[i] > data[i].get(numrows))
                 vmin[i] = data[i].get(numrows);
     }
 
     /**
-     * Method that updates average voltage for every cell.
+     * Updates the average voltage for each cell.
      */
-    private void updateAvg(){
+    private void updateAvg()
+    {
         for(int i = 0; i < vavg.length; i++)
             vavg[i] = (vavg[i]*(numrows) + data[i].get(numrows))/(numrows+1);
-
     }
 
     /**
-     * Method that updates maxmimum difference between maximum and minimum voltage for every cell.
+     * Updates the maxmimum difference between maximum and minimum voltage for each cell.
      */
-    private void updateDelta(){
+    private void updateDelta()
+    {
         for(int i = 0; i < vdelta.length; i++)
             vdelta[i] = vmax[i] - vmin[i];
     }
@@ -180,9 +186,10 @@ public class Module {
     /**
      * Stores the statistical data in an array and returns it.
      * @param cell_id Number identification of the cell.
-     * @return Array of double respectively containing voltage max, voltage min, voltage average and voltage delta.
+     * @return Array respectively containing voltage max, voltage min, voltage average and voltage delta.
      */
-    public Double[] getStatsRow(int cell_id){
+    public Double[] getStatsRow(int cell_id)
+    {
         Double[] row = new Double[CONST_NUMSTATS];
         row[0] = vmax[cell_id];
         row[1] = vmin[cell_id];
@@ -197,20 +204,23 @@ public class Module {
      * @param row_id Number identification of the row
      * @return The data row at position row_id
      */
-    public Double[] getDataRow(int row_id){
+    public Double[] getDataRow(int row_id)
+    {
         Double[] row = new Double[data.length];
-        for(int i = 0; i < data.length; i++){
+
+        for(int i = 0; i < data.length; i++)
             row[i] = data[i].get(row_id);
-        }
+
         return row;
     }
 
     /**
      * Stores the raw faults at postion row_id into an array and returns it.
      * @param row_id Number identification of the row
-     * @return The faults row at position row_id
+     * @return The faults row at position row_id, or null if faults aren't included in the module
      */
-    public String[] getFaultsRow(int row_id){
+    public String[] getFaultsRow(int row_id)
+    {
         if(faultsdata == null)
             return null;
 
@@ -221,28 +231,31 @@ public class Module {
         return row;
     }
 
-    /** Return The number of voltage sensors (cells).
+    /** Returns the number of voltage sensors (cells).
      * @return The number of voltage sensors (cells).
      */
-    public int getNumVoltSens() {
+    public int getNumVoltSens()
+    {
         return numvoltsens;
     }
 
-    /** Return The number of temperature sensors.
+    /** Returns the number of temperature sensors.
      * @return The number of temperature sensors.
      */
-    public int getNumTempSens() {
+    public int getNumTempSens()
+    {
         return numtempsens;
     }
 
-    /** Return Number of rows (elements) in the module.
-     * @return Number of rows (elements) in the module.
+    /** Returns the number of rows (number of values for each field) in the module.
+     * @return The number of rows (number of values for each field) in the module.
      */
-    public int getNumRows(){
+    public int getNumRows()
+    {
         return numrows;
     }
 
-    /** Return The global module maximum voltage.
+    /** Returns the global module maximum voltage.
      * @return The global module maximum voltage.
      */
     public double getVMax()
@@ -254,7 +267,7 @@ public class Module {
         return max;
     }
 
-    /** Return The global module minimum voltage.
+    /** Returns the global module minimum voltage.
      * @return The global module minimum voltage.
      */
     public double getVMin()
@@ -266,7 +279,7 @@ public class Module {
         return min;
     }
 
-    /** Return The global module maximum difference between maximum and minimum voltage.
+    /** Returns the global module maximum difference between maximum and minimum voltage.
      * @return The global module maximum difference between maximum and minimum voltage.
      */
     public double getMaxDelta()
@@ -278,7 +291,7 @@ public class Module {
         return deltamax;
     }
 
-    /** Return The global module voltage average.
+    /** Returns the global module voltage average.
      * @return The global module voltage average.
      */
     public double getVAvg()
@@ -292,8 +305,8 @@ public class Module {
         return avg;
     }
 
-    /** Return A double array with the global module statistical data, respectively max voltage, min voltage, average voltage and delta voltage.
-     * @return A double array with the global module statistical data, respectively max voltage, min voltage, average voltage and delta voltage.
+    /** Return An array with the global module statistical data, respectively max voltage, min voltage, average voltage and delta voltage.
+     * @return An array with the global module statistical data, respectively max voltage, min voltage, average voltage and delta voltage.
      * @see Module#getVMax()
      * @see Module#getVMin()
      * @see Module#getVAvg()
@@ -310,27 +323,29 @@ public class Module {
     }
 
     /**
-     * Returns number of total fields (columns).
+     * Returns the number of total fields (columns).
      * @return Number of total fields (columns).
      */
-    public int getNumfields() {
+    public int getNumfields()
+    {
         return numfields;
     }
 
-    /** Return true if current is present, false otherwise.
-     * @return True if current is present, false otherwise.
+    /** Returns true if current measurement is present, false otherwise.
+     * @return True if current measurement is present, false otherwise.
      */
-    public boolean getCurrentBool() {
+    public boolean getCurrentBool()
+    {
         return current;
     }
 
-    /** This method is used to retrieve the last n data elements to plot in the associated chart.
+    /** This method is used to retrieve the last n data elements to plot them in the associated chart.
      * @param n Last n row samples.
      * @return A n by number of fields XYChartItem matrix containing  the last n samples stored in the module.
      * @see it.unicas.engsoftwareproject.controller.GraphController#updateSeries(int)
      */
-    public XYChartItem[][] getLastData(int n){
-
+    public XYChartItem[][] getLastData(int n)
+    {
         if(n > numrows)
             n = numrows;
 

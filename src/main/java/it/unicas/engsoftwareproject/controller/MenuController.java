@@ -1,7 +1,7 @@
 package it.unicas.engsoftwareproject.controller;
 
 import it.unicas.engsoftwareproject.BMSMonitor;
-import javafx.event.ActionEvent;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -28,15 +28,16 @@ public class MenuController {
     private TextField timefield;
 
     /**
-     * Method called on action for "Start Simulation" button selection, storing and checking the given paths in the list view, notifying the MonitorController class with such settings and finally setups the monitor stage.
-     * It also checks if given sources and sample time are valid.
+     * Method called on action by the "Start Simulation" button, stores and checks the given paths in the list view,
+     * notifies the MonitorController class with the settings and finally setups the monitor stage.
+     * It also checks if the given sources and sample time are valid.
      * Hides in the background until the monitor stage is closed.
      * @see MonitorController#setSettings(String[], int)
      * @see MenuController#showAlert(String, String)
      */
     @FXML
-    protected void startSimulation(){
-
+    protected void startSimulation()
+    {
         // Show alerts if exceptions may occur
         if (listview.getItems().size() == 0) {
             showAlert("Alert","You haven't provided any data source.");
@@ -66,6 +67,7 @@ public class MenuController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
         // Loads bootstrap and custom stylesheet
         monitor_scene.getStylesheets().add(BMSMonitor.class.getResource("CustomStylesheet.css").toExternalForm());
         monitor_scene.getStylesheets().add("org/kordamp/bootstrapfx/bootstrapfx.css");
@@ -75,12 +77,10 @@ public class MenuController {
         monitor_stage.setMinHeight(720);
         monitor_stage.setMinWidth(1280);
         monitor_stage.show();
-
-
     }
 
     /**
-     * Method called on action for "Add Module" button selection, adding specified file path from the user in the list view.
+     * Method called on action by the "Add Module" button, adds the specified file path from the user into the list view.
      * @see MenuController#showAlert(String, String)
      */
     @FXML
@@ -98,11 +98,10 @@ public class MenuController {
         if (file != null)
             listview.getItems().add(file.getAbsolutePath());
         System.out.println(listview.getItems().size());
-
     }
 
     /**
-     * Delete selected item from the user in the list view.
+     * Deletes the selected item from the user in the list view.
      */
     @FXML
     void deleteModule()

@@ -7,16 +7,13 @@ import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 
-
 /**
- * Implementation of DataSource, manages reading CSV files.
+ * Implementation of DataSource, it reads data from CSV files.
  */
-public class CSVReader implements DataSource {
-
+public class CSVReader implements DataSource
+{
     private ArrayList<String> fields;
-
     private static int INSTANCE_COUNTER = 0;
-
     private int id;
     private int numcols;
     private int numvoltsens;
@@ -35,13 +32,14 @@ public class CSVReader implements DataSource {
     State state;
 
     /**
-     * Initialize the reader, storing the amount of fields, and add such active module to DataHandler.
+     * Constructor: Initializes the reader, storing the amount of fields, and adds a new module representing the reader into DataHandler.
      * @param pathname CSV system path.
      * @param T Sample time of the simulation.
-     * @throws FileNotFoundException Exception thrown when the system path is not valid.
+     * @throws FileNotFoundException Exception thrown when the system path is invalid.
      * @see DataHandler
      */
-    public CSVReader(String pathname, int T) throws FileNotFoundException {
+    public CSVReader(String pathname, int T) throws FileNotFoundException
+    {
         // Initalization of members of the class (reads file to obtain fields properties)
         id = INSTANCE_COUNTER;
         INSTANCE_COUNTER++;
@@ -84,14 +82,14 @@ public class CSVReader implements DataSource {
         System.out.println("Current: " + current);
         System.out.println("Faults: " + faults);
 
-        // Creates a new module if CSV reading is successful
+        // Creates a new module if the CSV reading is successful
         DataHandler.getInstance().addModule(numvoltsens,numtempsens,current,faults,id);
 
         sc.close();
     }
 
     /**
-     * Implementation of the start method, once started updates data every sample time milliseconds scheduling an attribute timer of the class.
+     * Implementation of the start method, once started updates data every [sample time] milliseconds scheduling a timer, which is an attribute of the class.
      * @throws FileNotFoundException Exception thrown when the system path is not valid.
      * @see CSVReader#update()
      */
@@ -111,8 +109,8 @@ public class CSVReader implements DataSource {
     }
 
     /**
-     * Implementation of the update method, whenever called, updates data reading calling the DataHandler singleton.
-     * If reaches end of file, calls stop() and updates state.
+     * Implementation of the update method; whenever called, reads the next line of data and updates the DataHandler singleton.
+     * If it reaches the end of the file, it calls stop() and updates state.
      * @see DataHandler
      */
     public void update()
@@ -130,7 +128,7 @@ public class CSVReader implements DataSource {
     }
 
     /**
-     * Implementation of the pause method, whenever called, pauses the reader execution and updates state.
+     * Implementation of the pause method, whenever called, it pauses the reader execution and updates the state.
      */
     public void pause()
     {
@@ -143,7 +141,7 @@ public class CSVReader implements DataSource {
     }
 
     /**
-     * Implementation of the resume method, whenever called, resume reading and updates state.
+     * Implementation of the resume method, whenever called, it resumes the reader and updates state.
      */
     public void resume()
     {
@@ -161,7 +159,7 @@ public class CSVReader implements DataSource {
     }
 
     /**
-     * Implementation of the stop method, whenever called, stops the reader execution and close the file reader.
+     * Implementation of the stop method, whenever called, it stops the reader execution and closes the file reader.
      */
     public void stop()
     {
@@ -172,12 +170,11 @@ public class CSVReader implements DataSource {
     }
 
     /**
-     * Resets counter whenever called (used to reset CSV Readers stopping the simulation)
+     * Resets counter whenever called (used to reset CSV Readers after stopping the simulation)
      * @see it.unicas.engsoftwareproject.controller.MonitorController
      */
     static public void resetCounter()
     {
         INSTANCE_COUNTER = 0;
     }
-
 }

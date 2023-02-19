@@ -17,16 +17,19 @@ import java.time.format.DateTimeFormatter;
 /**
  * Singleton class that holds responsibility of managing and updating incoming data and store such data in files.
  */
-public class DataHandler {
+public class DataHandler
+{
     private static DataHandler instance = null;
 
     /**
      * Used to reference the singleton class object.
      * @return Singleton object
      */
-    public static synchronized DataHandler getInstance(){
+    public static synchronized DataHandler getInstance()
+    {
         if(instance == null)
             instance = new DataHandler();
+
         return instance;
     }
 
@@ -34,14 +37,14 @@ public class DataHandler {
     final public int CONST_NUMMODULES = 6;
     // Number of active modules
     private int activemodules = 0;
-
     // Modules container
     private Module[] modules = null;
 
     /**
-     * Initialize the array with the maximum amount of modules instantiable.
+     * Constructor: Initializes the array with the maximum amount of modules instantiable.
      */
-    private DataHandler(){
+    private DataHandler()
+    {
         modules = new Module[CONST_NUMMODULES];
     }
 
@@ -58,22 +61,21 @@ public class DataHandler {
             modules[activemodules] = new Module(numvoltsens, numtempsens, current, faults, id);
             activemodules++;
         }
-
     }
 
     /**
-     * Updates data logically, and graphically in the Module class and in the displaying containers through the Monitor classes.
+     * Updates data in the Module class, and graphically in the displaying containers through the Controller classes.
      * @param datarow Array of strings containing the data to be updated and displayed on the interface.
-     * @param id_module Module ID to be updated.
+     * @param id_module ID for the module to be updated.
      * @see MonitorController#updateGraphics(int)
      * @see GraphController#updateSeries(int)
      * @see Module#addRow(String[])
      */
     public void updateData(String[] datarow, int id_module)
     {
-        Module m = modules[id_module];
         // adds data row to the specific module
-        m.addRow(datarow);
+        modules[id_module].addRow(datarow);
+
         // updates graphics
         Platform.runLater(() -> MonitorController.updateGraphics(id_module));
         if(BMSMonitor.stagelist.size() > 2)
@@ -81,19 +83,19 @@ public class DataHandler {
     }
 
     /**
-     * Creates a CSV file with the statistical data of a given Module object through module ID.
-     * @param id_module Module ID to be manipulated.
+     * Creates a CSV file with the statistical data of a given Module object identified by the module ID.
+     * @param id_module ID of the module the function will write the statistical data of.
      * @throws IOException Exception thrown if the CSV file can't be built.
      */
     public void writeStatsCSV(int id_module) throws IOException
     {
-        // Building stats file
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy.MM.dd_HH.mm.ss");
         String now = dtf.format(LocalDateTime.now());
         String path = System.getProperty("user.dir") + "/CSV_out/";
 
         if(!Files.exists(Paths.get(path)))
             new File(path).mkdirs();
+
         FileWriter fw = new FileWriter(path + "stats_" + now + "_mod_" +  id_module + ".csv");
         // Writing stats fields
         fw.write("vmax, vmin, vavg, vdelta\n");
@@ -113,12 +115,12 @@ public class DataHandler {
     }
 
     /**
-     * Creates a CSV file with the data stores in a given Module object through module ID.
-     * @param id_module Module ID to be manipulated.
+     * Creates a CSV file with the data of a given Module object identified by the module ID.
+     * @param id_module ID of the module the function will write the data of.
      * @throws IOException Exception thrown if the CSV file can't be built.
      */
-    public void writeDataCSV(int id_module) throws IOException {
-
+    public void writeDataCSV(int id_module) throws IOException
+    {
         // Building data file
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy.MM.dd_HH.mm.ss");
         String now = dtf.format(LocalDateTime.now());
@@ -174,21 +176,24 @@ public class DataHandler {
     }
 
     /**
-     * Return number of active modules.
+     * Returns the number of active modules.
      * @return Number of active modules.
      */
-    public int getActiveModules() {return activemodules;}
+    public int getActiveModules()
+    {
+        return activemodules;
+    }
 
     /**
-     * Instantiate readers using the given paths and sample time.
-     * @param paths  An array containing system paths of the data source.
-     * @param sampletime Sample time of the execution.
+     * Instantiates readers using the given paths and sample time.
+     * @param paths Array containing system paths of the data source.
+     * @param sampletime Sample time for the execution.
      * @return An array of DataSource class with instanced readers.
      * @throws FileNotFoundException Exception thrown if one or more paths are not valid.
      * @see MonitorController#initialize()
      */
-    public DataSource[] genReaders(String[] paths, int sampletime) throws FileNotFoundException {
-
+    public DataSource[] genReaders(String[] paths, int sampletime) throws FileNotFoundException
+    {
         // Generating data readers
         // ***IMPORTANT***
         // You need to change this part of the code in a way that it works for the desired data source
@@ -205,15 +210,17 @@ public class DataHandler {
     /**
      * Resets active modules to zero.
      */
-    public void resetActivemodules() {
+    public void resetActivemodules()
+    {
         activemodules = 0;
     }
 
     /**
-     * @param id_module Module ID to return.
+     * @param id_module ID for the module to be returned.
      * @return Module with identification id_module.
      */
-    public Module getModule(int id_module){
+    public Module getModule(int id_module)
+    {
         return modules[id_module];
     }
 }
